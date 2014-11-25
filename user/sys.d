@@ -1,0 +1,1 @@
+sys.o: sys.S
