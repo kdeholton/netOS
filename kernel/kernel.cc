@@ -12,6 +12,8 @@
 #include "fs.h"
 #include "ide.h"
 #include "idle.h"
+#include "vga.h"
+#include "console.h"
 
 extern "C"
 void kernelMain(void) {
@@ -36,13 +38,17 @@ void kernelMain(void) {
       
     Pic::off();             // make sure interrupts are disabled
 
+    Heap::init((void*)0x100000,0x100000);
+
     U8250 uart;
 
     /* initialize serial console */
-    U8250::init(&uart);
+    Console c;
+    Console::init(&uart, &c);
+    //U8250::init(&uart);
 
     /* redirect debug output to COM1 */
-    Debug::init(U8250::it);
+    Debug::init(Console::me);
     Debug::debugAll = false;
     Debug::printf("\nWhat just happened? Who am I? Why am I here?\n");
     Debug::printf("I am K439, welcome to my world\n");
@@ -54,7 +60,6 @@ void kernelMain(void) {
     Syscall::init();
 
     /* Initialize the heap */
-    Heap::init((void*)0x100000,0x100000);
     Debug::printf("I have a heap\n");
 
     /* Make the rest of memory available for VM */

@@ -7,6 +7,7 @@
 #include "err.h"
 #include "u8250.h"
 #include "libk.h"
+#include "console.h"
 
 void Syscall::init(void) {
     IDT::addTrapHandler(100,(uint32_t)syscallTrap,3);
@@ -19,7 +20,9 @@ extern "C" long syscallHandler(uint32_t* context, long num, long a0, long a1) {
         Process::exit(a0);
         return -1;
     case 1: /* putchar */
-        Debug::printf("%c",a0);
+	//if((a0 >= 0x20 && a0 <= 0x7e) || a0 == 0xA){
+	        Debug::printf("%c",a0);
+	//}
         return 0;
     case 2: /* fork */
         {
@@ -139,7 +142,7 @@ extern "C" long syscallHandler(uint32_t* context, long num, long a0, long a1) {
         }
     case 14: /* getchar */
         {
-              return U8250::it->get();
+              return Console::me->get();
         }
     default:
         Process::trace("syscall(%d,%d,%d)",num,a0,a1);
