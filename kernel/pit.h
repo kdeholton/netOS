@@ -10,6 +10,7 @@ public:
     static uint32_t jiffies;
     static uint32_t hz;
     static uint32_t seconds();
+    static uint32_t millis();
     static void init(uint32_t hz);
     static void handler();
 };

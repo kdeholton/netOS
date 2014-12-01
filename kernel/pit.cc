@@ -20,6 +20,10 @@ uint32_t Pit::seconds() {
     return jiffies / hz;
 }
 
+uint32_t Pit::millis(){
+	return jiffies / hz * 1000;
+}
+
 void Pit::init(uint32_t hz) {
      uint32_t d = 1193182 / hz;
      //Debug::printf("Pit::init freq=%dHZ, divide=%d\n",hz,d);

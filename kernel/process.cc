@@ -405,10 +405,10 @@ public:
     SimpleQueue<Process*> waiting;
 };
 
-void Process::sleepUntil(uint32_t second) {
+void Process::sleepUntil(uint32_t millis) {
     Process::disable();
 
-    uint32_t target = second * Pit::hz;
+    uint32_t target = millis;
     if (target > Pit::jiffies) {
         Timer **pp = &timers;
         Timer* p = timers;
@@ -435,8 +435,8 @@ void Process::sleepUntil(uint32_t second) {
     Process::enable();
 }
 
-void Process::sleepFor(uint32_t seconds) {
-    sleepUntil(Pit::seconds() + seconds);
+void Process::sleepFor(uint32_t millis) {
+    sleepUntil(Pit::millis() + millis);
 }
 
 /* called for every timer tick */

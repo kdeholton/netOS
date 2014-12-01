@@ -17,5 +17,6 @@ extern long fork();
 extern long join(long proc);
 extern long shutdown();
 extern long clear();
+extern long sleep(int amt);
 
 #endif
