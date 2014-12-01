@@ -36,6 +36,13 @@ long isELF(int argc, char** argv){
 }
 
 int main() {
+puts("                  x    x              x      xxxxxxx    xxxxx\n");
+puts("                  xx   x    xxxx      x      x     x   x\n");     
+puts("                  x x  x   x    x  xxxxxxx   x     x    xx\n");
+puts("                  x  x x   xxxxxx     x      x     x      xx\n");
+puts("                  x   xx   x          x      x     x        x\n");
+puts("                  x    x    xxxx      x      xxxxxxx   xxxxx\n");
+puts("\n\n\n\n\n\n\n\n\n\n");
     while (1) {
         puts("shell> ");
         char* in = gets();
