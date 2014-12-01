@@ -150,3 +150,9 @@ getchar:
 	int $100
 	ret
 
+	.global sleep
+sleep:
+	mov $15, %eax
+	mov 4(%esp), %ecx
+	int $100
+	ret

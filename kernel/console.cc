@@ -13,6 +13,7 @@ void Console::init(U8250* u, Console* c){
 	for(int i = 0; i < ROWS; i++){
 		me->clearRow(i);
 	}
+	me->clearRow(0);
 }
 
 void Console::put(char ch){
