@@ -29,6 +29,7 @@ public:
 	virtual void incrementRow();
 	virtual void decrementColumn();
 	virtual void decrementRow();
+  virtual void clear();
 };
 
 #endif

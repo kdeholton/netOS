@@ -150,9 +150,17 @@ getchar:
 	int $100
 	ret
 
+# void sleep(uint32_t sec)
 	.global sleep
 sleep:
 	mov $15, %eax
 	mov 4(%esp), %ecx
 	int $100
 	ret
+
+# void clear()
+  .global clear
+clear:
+  mov $16, %eax
+  int $100
+  ret

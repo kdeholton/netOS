@@ -16,6 +16,13 @@ void Console::init(U8250* u, Console* c){
 	me->clearRow(0);
 }
 
+void Console::clear(){
+  for(int i = 0; i < ROWS; i++){
+    this->clearRow(i);
+  }
+  this->clearRow(0);
+}
+
 void Console::put(char ch){
 	vga->cursor(row, col, VGA::BLACK, VGA::WHITE);
 	if(ch == 8 || ch == 0x7f){

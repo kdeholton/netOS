@@ -3,3 +3,4 @@
 *.d
 *.o
 user/ping
+user/clear
