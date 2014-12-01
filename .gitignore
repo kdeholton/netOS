@@ -1,0 +1,4 @@
+#Executables and things from make
+
+*.d
+*.o
