@@ -42,6 +42,10 @@ uint16_t pciConfigReadWord (uint8_t bus, uint8_t slot,
     return (tmp);
  }
 
+uint32_t printPCIHeader(uint32_t addr){
+  return 0;
+}
+
 /* global process declarations */
 Debug* Process::DEBUG;                       // the debug channel
 size_t Process::STACK_LONGS = 1024 * 2;      // default kernel stack size
@@ -173,7 +177,8 @@ uint32_t strdup(const char* str, char* dest) {
 }
 
 long Process::execv(const char* fileName, SimpleQueue<const char*> *args, long argc) {
-    Debug::printf("PCI Config Read Word: %X\n", pciConfigReadWord(0,3,0,0));
+    Debug::printf("Address 0xC000: %x\n",*(int*)0xC000);
+    //Debug::printf("PCI Config Read Word: %X\n", pciConfigReadWord(0,3,0,0));
     File *prog = FileSystem::rootfs->rootdir->lookupFile(fileName);
     if (prog == nullptr) {
         return ERR_NOT_FOUND;
