@@ -21,6 +21,13 @@ char* gets() {
             if (p == 0) return 0;
         }
         char c = getchar();
+	if(c == 8 || c == 0x7f){
+		if(i > 0){
+        		putchar(c);
+			p[i--] = 0;
+		}
+		continue;
+	}
         putchar(c);
         if (c == 13) {
             puts("\n");
