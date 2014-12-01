@@ -21,6 +21,8 @@ void Console::clear(){
     this->clearRow(i);
   }
   this->clearRow(0);
+  this->row = 0;
+  this->col = 0;
 }
 
 void Console::put(char ch){
