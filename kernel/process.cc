@@ -177,7 +177,7 @@ uint32_t strdup(const char* str, char* dest) {
 }
 
 long Process::execv(const char* fileName, SimpleQueue<const char*> *args, long argc) {
-    Debug::printf("Address 0xC000: %x\n",*(int*)0xC000);
+    //Debug::printf("Address 0xC000: %x\n",*(int*)0xC000);
     //Debug::printf("PCI Config Read Word: %X\n", pciConfigReadWord(0,3,0,0));
     File *prog = FileSystem::rootfs->rootdir->lookupFile(fileName);
     if (prog == nullptr) {

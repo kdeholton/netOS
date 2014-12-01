@@ -50,8 +50,8 @@ void kernelMain(void) {
     /* redirect debug output to COM1 */
     Debug::init(Console::me);
     Debug::debugAll = false;
-    Debug::printf("\nWhat just happened? Who am I? Why am I here?\n");
-    Debug::printf("I am K439, welcome to my world\n");
+    //Debug::printf("\nWhat just happened? Who am I? Why am I here?\n");
+    //Debug::printf("I am K439, welcome to my world\n");
 
     /* initialize the TSS */
     TSS::init();
@@ -60,7 +60,7 @@ void kernelMain(void) {
     Syscall::init();
 
     /* Initialize the heap */
-    Debug::printf("I have a heap\n");
+    //Debug::printf("I have a heap\n");
 
     /* Make the rest of memory available for VM */
     PhysMem::init(0x200000,0x400000);
@@ -68,7 +68,7 @@ void kernelMain(void) {
     /* Initialize the process subsystem */
     Process::init();
     Process::DEBUG->off();
-    Process::trace("Process tracing enabled");
+    //Process::trace("Process tracing enabled");
 
     Pic::init();                // initialize the PIC, still disabled
 
@@ -78,11 +78,11 @@ void kernelMain(void) {
 
     /* hdd */
     IDE hdd(3);
-    Process::trace("loaded driver for hdd");
+    //Process::trace("loaded driver for hdd");
 
     /* rootfs */
     FileSystem::init(new Fat439(&hdd));
-    Process::trace("initialized root filesystem");
+    //Process::trace("initialized root filesystem");
 
     /* Create the Primordial process */
     Process* initProcess = new Init();
@@ -94,7 +94,7 @@ void kernelMain(void) {
     initProcess->start();
 
     /* Yield to it, it will start running with interrupts enabled */
-    Process::trace("Let there be processes");
+    //Process::trace("Let there be processes");
     Process::yield();
 
     Debug::panic("The impossible has happened");

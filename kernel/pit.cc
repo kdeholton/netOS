@@ -22,12 +22,12 @@ uint32_t Pit::seconds() {
 
 void Pit::init(uint32_t hz) {
      uint32_t d = 1193182 / hz;
-     Debug::printf("Pit::init freq=%dHZ, divide=%d\n",hz,d);
+     //Debug::printf("Pit::init freq=%dHZ, divide=%d\n",hz,d);
      if ((d & 0xffff) != d) {
          Debug::panic("Pit::init d=%d doesn't fit in 16 bits",d);
      }
      Pit::hz = FREQ / d;
-     Debug::printf("Pit::init requested:%dHz, actual:%dHz\n",hz,Pit::hz);
+     //Debug::printf("Pit::init requested:%dHz, actual:%dHz\n",hz,Pit::hz);
      pit_do_init(d);
 }
     
