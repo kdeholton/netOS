@@ -84,3 +84,28 @@ void IDE::readBlock(uint32_t sector, void* buf) {
     mutex.unlock();
 
 }
+
+void IDE::writeBlock(uint32_t sector, void* buf){
+    uint16_t* buffer = (uint16_t*) buf;
+    int base = port(drive);
+    int ch = channel(drive);
+
+    mutex.lock();
+
+    waitForDrive(drive);
+
+    outb(base + 2, 1);			// sector count
+    outb(base + 3, sector >> 0);	// bits 7 .. 0
+    outb(base + 4, sector >> 8);	// bits 15 .. 8
+    outb(base + 5, sector >> 16);	// bits 23 .. 16
+    outb(base + 6, 0xE0 | (ch << 4) | ((sector >> 24) & 0xf));
+    outb(base + 7, 0x30);		// read with retry
+
+    waitForDrive(drive);
+
+    for (uint32_t i=0; i<blockSize/sizeof(uint32_t); i++) {
+        outw(base, buffer[i]);
+    }
+
+    mutex.unlock();
+}

@@ -164,3 +164,11 @@ clear:
   mov $16, %eax
   int $100
   ret
+
+
+	.global write
+write:
+    mov $17, %eax
+    #TODO: Get args for write
+    int $100
+    ret
