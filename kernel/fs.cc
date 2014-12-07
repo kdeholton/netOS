@@ -70,12 +70,15 @@ public:
 
     int32_t write(void* buf, uint32_t length){
 	uint32_t blockNumber = start;
+	uint32_t oldBlock = 0;
 	while(length > 0){
 		if(blockNumber == (uint32_t)-1){
 			blockNumber = fs->findFreeBlock();
 			fs->fat[blockNumber] = -1;
+			fs->fat[oldBlock] = blockNumber;
 		}
 		fs->dev->write(blockNumber * 512, buf, MIN(512, length));
+		oldBlock = blockNumber;
 		blockNumber = fs->fat[blockNumber];
 		length -= MIN(512, length);
 	}
