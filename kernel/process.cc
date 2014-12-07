@@ -408,7 +408,7 @@ public:
 void Process::sleepUntil(uint32_t millis) {
     Process::disable();
 
-    uint32_t target = millis;
+    uint32_t target = millis * Pit::hz / 1000;
     if (target > Pit::jiffies) {
         Timer **pp = &timers;
         Timer* p = timers;

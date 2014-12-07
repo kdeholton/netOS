@@ -4,6 +4,8 @@
 #include "stdint.h"
 #include "err.h"
 
+#define MIN(x, y) (x < y ? x : y)
+
 /**************/
 /* FileSystem */
 /**************/
@@ -21,6 +23,8 @@ void FileSystem::init(FileSystem* rfs) {
 static uint32_t min(uint32_t a, uint32_t b) {
     return (a < b) ? a : b;
 }
+
+
 
 /* An open Fat439 file, one per file, per system */
 class OpenFile : public Resource {
@@ -64,6 +68,20 @@ public:
         return count;
     }
 
+    int32_t write(void* buf, uint32_t length){
+	uint32_t blockNumber = start;
+	while(length > 0){
+		if(blockNumber == (uint32_t)-1){
+			blockNumber = fs->findFreeBlock();
+			fs->fat[blockNumber] = -1;
+		}
+		fs->dev->write(blockNumber * 512, buf, MIN(512, length));
+		blockNumber = fs->fat[blockNumber];
+		length -= MIN(512, length);
+	}
+	return 0;
+    }
+
     int32_t readFully(uint32_t offset, void* buf, uint32_t length) {
         char* p = (char*) buf;
         uint32_t togo = length;
@@ -104,6 +122,11 @@ public:
         long cnt = openFile->read(offset,buf,length);
         if (cnt > 0) offset += cnt;
         return cnt;
+    }
+
+    virtual int32_t write(void* buf, uint32_t length){
+	long val = openFile->write(buf, length);
+	return val;
     }
 };
 
@@ -173,6 +196,7 @@ Fat439::Fat439(BlockDevice *dev) : FileSystem(dev) {
     dev->readFully(512,fat,super.nBlocks * sizeof(uint32_t));
     rootdir = new Fat439Directory(this,super.root);
 }
+
 
 OpenFile* Fat439::openFile(uint32_t start) {
     openFilesMutex.lock();

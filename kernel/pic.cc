@@ -90,6 +90,7 @@ void pic_eoi(int irq) {
 
 extern "C" void pic_irq(int irq) {
     Process::startIrq();
+    
     switch (irq) {
     case 0: Pit::handler(); break;
     case 1: /*Keyboard::handler();*/ break;

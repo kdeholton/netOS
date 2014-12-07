@@ -9,7 +9,9 @@ Pit::init requested:1000Hz, actual:1000Hz
 [] loaded driver for hdd
 [] initialized root filesystem
 [] Let there be processes
+PCI Config Read Word: A1FF
 shell> ls
+PCI Config Read Word: A1FF
 shutdown
 shutdown.c
 shell.c
@@ -24,16 +26,21 @@ f1.txt
 f2.txt
 panic
 shell> echo This is cool
+PCI Config Read Word: A1FF
 This is cool
 shell>     echo    I know    how  to         handle  spaces   
+PCI Config Read Word: A1FF
 I know how to handle spaces
 shell> cat f1.txt
+PCI Config Read Word: A1FF
 This is f1
 It contains text
 shell>  f1.txt
+PCI Config Read Word: A1FF
 This is f1
 It contains text
 shell> cat f1.txt f2.txt
+PCI Config Read Word: A1FF
 This is f1
 It contains text
 0
@@ -43,6 +50,7 @@ It contains text
 44444
 555555
 shell> f2.txt f1.txt
+PCI Config Read Word: A1FF
 0
 11
 222
@@ -50,6 +58,7 @@ shell> f2.txt f1.txt
 44444
 555555
 shell> cat f1.txt f2.txt f1.txt f2.txt
+PCI Config Read Word: A1FF
 This is f1
 It contains text
 0
@@ -69,7 +78,9 @@ It contains text
 shell> gcc
 gcc: command not found
 shell> cat notThere
+PCI Config Read Word: A1FF
 cat: notThere: No such file or directory
 shell> shutdown
+PCI Config Read Word: A1FF
 
 *** System Shutdown ***

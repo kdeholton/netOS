@@ -169,6 +169,8 @@ clear:
 	.global write
 write:
     mov $17, %eax
+    lea 4(%esp), %ecx
+    mov $0, %edx
     #TODO: Get args for write
     int $100
     ret

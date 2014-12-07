@@ -18,7 +18,7 @@ static char kbd_get(void);
 /* interrupt handler */
 void Keyboard::handler(void) {
     char ch = kbd_get();
-Debug::printf("%c\n",ch);
+    Debug::printf("%c\n",ch);
     bb->put(ch);
 }
 

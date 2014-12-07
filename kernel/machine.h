@@ -17,6 +17,7 @@ extern "C" void pit_do_init(int divide);
 extern "C" int inb(int port);
 extern "C" int inl(int port);
 extern "C" void outb(int port, int val);
+extern "C" void outw(int port, int16_t val);
 
 extern "C" void ltr(uint32_t tr);
 

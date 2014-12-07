@@ -132,7 +132,7 @@ int main(){
 		puts("\n");
 		puts("\n");
 		puts("\n");
-		sleep(1500);
+		sleep(1000);
 		clear();
 	}
 	free(pic1);

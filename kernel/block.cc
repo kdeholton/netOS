@@ -21,6 +21,14 @@ uint32_t BlockDevice::read(uint32_t offset, void* buf, uint32_t n) {
     return m;  
 }
 
+uint32_t BlockDevice::write(uint32_t offset, void* buf, uint32_t len){
+	char* data = ((char*)buf) + offset;
+	uint32_t blockNumber = offset / blockSize;
+	writeBlock(blockNumber, data);
+	delete[] data;
+	return len;
+}
+
 void BlockDevice::readFully(uint32_t offset, void* buf, uint32_t n) {
     uint32_t togo = n;
     char* ptr = (char*) buf;

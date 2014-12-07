@@ -38,6 +38,7 @@ public:
     */
     virtual int32_t read(void *buf, uint32_t length) = 0;
 
+    virtual int32_t write(void *buf, uint32_t length) = 0;
     /* read as many bytes as you can, returned value:
 
         < 0 => error
@@ -80,6 +81,7 @@ public:
      Directory *rootdir;           // the root directory
 
      FileSystem(BlockDevice *dev) : dev(dev) {}
+     virtual uint32_t findFreeBlock() = 0;
 };
 
 /**************************/
@@ -103,6 +105,14 @@ public:
     Fat439(BlockDevice *dev);
     OpenFile* openFile(uint32_t start);
     void closeFile(OpenFile* of);
+    virtual uint32_t findFreeBlock(){
+	for(uint32_t i = 0; i < super.nBlocks; i++){
+		if(fat[i] == (uint32_t)-1){
+			return i;
+		}
+	}
+	return (uint32_t)-1;
+}
 };
 
 #endif

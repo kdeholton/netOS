@@ -150,6 +150,15 @@ outb:
 	pop %edx
 	ret
 
+	.global outw
+outw:
+	push %edx
+	mov 8(%esp),%dx
+	mov 12(%esp),%ax
+	outb %ax,%dx
+	pop %edx
+	ret
+
 	# int inb(int port)
 	.global inb
 inb:

@@ -157,6 +157,15 @@ extern "C" long syscallHandler(uint32_t* context, long num, long a0, long a1) {
     case 17: /* write */
       {
 	//TODO Write things
+	long* args = (long*)a0;
+        File* f = (File*) Process::current->resources->get(args[0],ResourceType::FILE);
+	uint16_t* buf = (uint16_t*)args[1];
+	long len = args[2];
+	if(f == nullptr){
+		return ERR_INVALID_ID;
+	}
+
+	f->write(buf, len);
 	return 0;
       }
     default:
