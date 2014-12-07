@@ -165,7 +165,6 @@ clear:
   int $100
   ret
 
-
 	.global write
 write:
     mov $17, %eax
@@ -174,3 +173,9 @@ write:
     #TODO: Get args for write
     int $100
     ret
+
+  .global createEditEnv
+createEditEnv:
+  mov $18, %eax
+  int $100
+  ret

@@ -19,5 +19,6 @@ extern long shutdown();
 extern long clear();
 extern long sleep(int amt);
 extern long write(long f, void* buf, long len);
+extern long createEditEnv();
 
 #endif
