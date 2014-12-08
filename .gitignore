@@ -4,3 +4,6 @@
 *.o
 user/ping
 user/clear
+user/edit
+user/sl
+user/forkbomb

@@ -30,6 +30,7 @@ public:
 	virtual void decrementColumn();
 	virtual void decrementRow();
   virtual void clear();
+  virtual void editBorder();
 };
 
 #endif

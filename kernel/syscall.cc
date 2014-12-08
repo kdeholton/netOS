@@ -156,17 +156,23 @@ extern "C" long syscallHandler(uint32_t* context, long num, long a0, long a1) {
       }
     case 17: /* write */
       {
-	//TODO Write things
-	long* args = (long*)a0;
+        //TODO Write things
+        long* args = (long*)a0;
         File* f = (File*) Process::current->resources->get(args[0],ResourceType::FILE);
-	uint16_t* buf = (uint16_t*)args[1];
-	long len = args[2];
-	if(f == nullptr){
-		return ERR_INVALID_ID;
-	}
+        uint16_t* buf = (uint16_t*)args[1];
+        long len = args[2];
+        if(f == nullptr){
+          return ERR_INVALID_ID;
+        }
 
-	f->write(buf, len);
-	return 0;
+        f->write(buf, len);
+        return 0;
+      }
+    case 18: /* createEditEnv */
+      {
+        Console::me->clear();
+        Console::me->editBorder();
+        return 0;
       }
     default:
       Process::trace("syscall(%d,%d,%d)",num,a0,a1);
