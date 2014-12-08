@@ -1,6 +1,7 @@
 #include "vga.h"
 #include "u8250.h"
 #include "console.h"
+#include "kbd.h"
 
 U8250 *Console::u8250 = nullptr;
 Console* Console::me = nullptr;
@@ -8,6 +9,7 @@ Console* Console::me = nullptr;
 
 void Console::init(U8250* u, Console* c){
 	U8250::init(u);
+  Keyboard::init();
 	u8250 = u;
 	me = c;
 	for(int i = 0; i < ROWS; i++){
@@ -23,65 +25,7 @@ void Console::clear(){
   this->clearRow(0);
   this->row = 0;
   this->col = 0;
-}
-
-void Console::editBorder(){
-  this->row = 21;
-  this->col = 0;
-  int i;
-  for(i=0; i<80; i++){
-    vga->put(21,i,'*',VGA::BLACK, VGA::GREEN);
-  }
-
-  //Exit & Save
-  vga->put(22,10,'^',VGA::WHITE, VGA::BLACK);
-  vga->put(22,11,'X',VGA::WHITE, VGA::BLACK);
-  vga->put(22,12,' ',VGA::BLACK, VGA::WHITE);
-  vga->put(22,13,'E',VGA::BLACK, VGA::WHITE);
-  vga->put(22,14,'X',VGA::BLACK, VGA::WHITE);
-  vga->put(22,15,'I',VGA::BLACK, VGA::WHITE);
-  vga->put(22,16,'T',VGA::BLACK, VGA::WHITE);
-  vga->put(22,17,' ',VGA::BLACK, VGA::WHITE);
-  vga->put(22,18,'&',VGA::BLACK, VGA::WHITE);
-  vga->put(22,19,' ',VGA::BLACK, VGA::WHITE);
-  vga->put(22,20,'S',VGA::BLACK, VGA::WHITE);
-  vga->put(22,21,'A',VGA::BLACK, VGA::WHITE);
-  vga->put(22,22,'V',VGA::BLACK, VGA::WHITE);
-  vga->put(22,23,'E',VGA::BLACK, VGA::WHITE);
-
-
-  //Exit & Discard
-  vga->put(23,10,'^',VGA::WHITE, VGA::BLACK);
-  vga->put(23,11,'Z',VGA::WHITE, VGA::BLACK);
-  vga->put(23,12,' ',VGA::BLACK, VGA::WHITE);
-  vga->put(23,13,'E',VGA::BLACK, VGA::WHITE);
-  vga->put(23,14,'X',VGA::BLACK, VGA::WHITE);
-  vga->put(23,15,'I',VGA::BLACK, VGA::WHITE);
-  vga->put(23,16,'T',VGA::BLACK, VGA::WHITE);
-  vga->put(23,17,' ',VGA::BLACK, VGA::WHITE);
-  vga->put(23,18,'&',VGA::BLACK, VGA::WHITE);
-  vga->put(23,19,' ',VGA::BLACK, VGA::WHITE);
-  vga->put(23,20,'D',VGA::BLACK, VGA::WHITE);
-  vga->put(23,21,'I',VGA::BLACK, VGA::WHITE);
-  vga->put(23,22,'S',VGA::BLACK, VGA::WHITE);
-  vga->put(23,23,'C',VGA::BLACK, VGA::WHITE);
-  vga->put(23,24,'A',VGA::BLACK, VGA::WHITE);
-  vga->put(23,25,'R',VGA::BLACK, VGA::WHITE);
-  vga->put(23,26,'D',VGA::BLACK, VGA::WHITE);
-
-
-  //Save
-  vga->put(22,32,'^',VGA::WHITE, VGA::BLACK);
-  vga->put(22,33,'W',VGA::WHITE, VGA::BLACK);
-  vga->put(22,34,' ',VGA::BLACK, VGA::WHITE);
-  vga->put(22,35,'S',VGA::BLACK, VGA::WHITE);
-  vga->put(22,36,'A',VGA::BLACK, VGA::WHITE);
-  vga->put(22,37,'V',VGA::BLACK, VGA::WHITE);
-  vga->put(22,38,'E',VGA::BLACK, VGA::WHITE);
-
-  vga->cursor(0,0,VGA::GREEN,VGA::WHITE);
-  this->row = 0;
-  this->col = 0;
+  vga->cursor(0,0,VGA::BLACK,VGA::WHITE);
 }
 
 void Console::put(char ch){
@@ -95,7 +39,7 @@ void Console::put(char ch){
 		incrementColumn();
 	}
 	if(ch == '\n'){
-		length = 0;
+		//length = 0;
 		incrementRow();
 	}
 	vga->cursor(row, col, VGA::GREEN, VGA::WHITE);
@@ -136,9 +80,9 @@ void Console::incrementRow(){ // Sets col to 0
 }
 
 char Console::get(){
-	char ch = u8250->get();
+	//char ch = u8250->get();
+  char ch = Keyboard::is->get();
 	return ch;
-	//return u8250->get();
 }
 
 void Console::shiftUp(){

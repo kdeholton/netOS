@@ -12,11 +12,11 @@ void U8250::put(char c) {
 }
 
 char U8250::get() {
-    getMutex.lock();
+    //getMutex.lock();
     while (!(inb(0x3F8+5) & 0x01)) {
        Process::yield();
     }
     char x = inb(0x3F8);
-    getMutex.unlock();
+    //getMutex.unlock();
     return x;
 }

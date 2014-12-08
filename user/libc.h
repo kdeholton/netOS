@@ -5,6 +5,7 @@
 
 extern void puts(char *p);
 extern char* gets();
+extern char* getbuf();
 extern void* malloc(long size);
 extern void free(void*);
 extern void* realloc(void* ptr, long newSize);
