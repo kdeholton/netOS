@@ -119,7 +119,7 @@ int main(){
 
 	clear();
 
-	for(int i = 80; i < 170; i++){
+	for(int i = 30; i < 170; i++){
 		puts("\n");
 		puts("\n");
 		puts("\n");
@@ -132,7 +132,7 @@ int main(){
 		puts("\n");
 		puts("\n");
 		puts("\n");
-		sleep(1000);
+		sleep(150);
 		clear();
 	}
 	free(pic1);

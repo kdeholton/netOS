@@ -11,7 +11,7 @@ public:
     /* read the given block */
     virtual void readBlock(uint32_t blockNumber, void* buffer) = 0;
 
-    virtual void writeBlock(uint32_t blockNumber, void* buffer) = 0;
+    virtual void writeBlock(uint32_t blockNumber, void* buffer, uint32_t size) = 0;
     /* read as much as count bytes starting at offset into the given buffer
        returns number of bytes actuallty read.
      */

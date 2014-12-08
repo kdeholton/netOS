@@ -12,7 +12,7 @@ public:
     IDE(int drive) : BlockDevice(SECTOR_SIZE), drive(drive) {}
 
     void readBlock(uint32_t blockNumber, void* buffer);
-    void writeBlock(uint32_t blockNumber, void* buffer);
+    void writeBlock(uint32_t blockNumber, void* buffer, uint32_t first);
 };
 
 #endif
