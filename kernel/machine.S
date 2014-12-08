@@ -155,7 +155,7 @@ outw:
 	push %edx
 	mov 8(%esp),%dx
 	mov 12(%esp),%ax
-	outb %ax,%dx
+	outw %ax,%dx
 	pop %edx
 	ret
 

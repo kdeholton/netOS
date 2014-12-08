@@ -21,7 +21,7 @@ uint32_t Pit::seconds() {
 }
 
 uint32_t Pit::millis(){
-	return jiffies / hz * 1000;
+	return (jiffies * 1000) / hz;
 }
 
 void Pit::init(uint32_t hz) {

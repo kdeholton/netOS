@@ -85,8 +85,16 @@ void IDE::readBlock(uint32_t sector, void* buf) {
 
 }
 
-void IDE::writeBlock(uint32_t sector, void* buf){
+void IDE::writeBlock(uint32_t sector, void* buf, uint32_t size){
+	Debug::printf("Writing to sector %d\n", sector);
+	//Debug::printf("The size is %d\n", size);
     uint16_t* buffer = (uint16_t*) buf;
+/*	Debug::printf("Data: \n");
+	for(uint32_t i = 0; i < size; i++){
+		Debug::printf("%c", buffer[i]);
+		//Debug::printf("Writing %s to f1.txt\n", buf);
+	}
+	Debug::printf(" \n end of data \n");*/
     int base = port(drive);
     int ch = channel(drive);
 
@@ -103,9 +111,16 @@ void IDE::writeBlock(uint32_t sector, void* buf){
 
     waitForDrive(drive);
 
-    for (uint32_t i=0; i<blockSize/sizeof(uint32_t); i++) {
-        outw(base, buffer[i]);
+
+    for (uint32_t i = 0; i<blockSize/sizeof(uint16_t); i++) {
+	//Debug::printf("%x%x", buffer[i], buffer[i+1]);
+	if(i >= (size+1)/2){
+		outw(base, 0);
+	}else{
+	        outw(base, buffer[i]);
+	}
     }
 
+	//Debug::printf("The size was %d uint16s\n", size / 2);
     mutex.unlock();
 }
