@@ -22,6 +22,7 @@ char* gets() {
         }
         char c = getchar();
 	if(c == 8 || c == 0x7f){
+    //puts(p);
 		if(i > 0){
         		putchar(c);
 			p[i--] = 0;

@@ -18,8 +18,7 @@ static char kbd_get(void);
 /* interrupt handler */
 void Keyboard::handler(void) {
   char ch = kbd_get();
-  //Debug::printf("%c\n",ch);
-  bb->put(ch);
+  if(ch != ~0) bb->put(ch); //Discard all upkeystrokes
 }
 
 /* internal functions */
@@ -84,8 +83,8 @@ static char ul(char x) {
 static char kbd_get(void) {
   while ((inb(0x64) & 1) == 0);
   uint8_t b = inb(0x60);
-  //Debug::printf("%x\n",b);
-  //return 0;
+  Debug::printf("%x\n",b);
+  return 0;
   switch (b) {
     case 0x02 ... 0x0a : return(ul('0' + b - 1));
     case 0x0b : return(ul('0'));
@@ -105,7 +104,7 @@ static char kbd_get(void) {
     case 0x1a : return(ul('['));
     case 0x1b : return(ul(']'));
     case 0x2b : return(ul('\\'));
-    case 0x1c : return('\n');
+    case 0x1c : return(13);
     case 0x1e : return(ul('a'));
     case 0x1f : return(ul('s'));
     case 0x20 : return(ul('d'));
@@ -133,7 +132,7 @@ static char kbd_get(void) {
 
     case 0x2a: case 0x36: shift = 1; return 0;
     case 0xaa: case 0xb6: shift = 0; return 0;
-    default: return 0;
+    default: return 255;
   }
 
 }
