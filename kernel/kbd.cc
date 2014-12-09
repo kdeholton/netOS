@@ -4,6 +4,8 @@
 #include "debug.h"
 
 int shift = 0;
+int control = 0;
+int direction = 0;
 
 InputStream<char> *Keyboard::is;
 BB<char> *bb;
@@ -83,8 +85,33 @@ static char ul(char x) {
 static char kbd_get(void) {
   while ((inb(0x64) & 1) == 0);
   uint8_t b = inb(0x60);
-  Debug::printf("%x\n",b);
-  return 0;
+  //Debug::printf("%x\n",b);
+  //return 0;
+
+  if(b == 0xe0){ //E0 indicates the next code is to do with cursor movement.
+    direction = !direction;
+    return 255;
+  }
+
+  if(control){ //Control key has been depressed.
+  }
+
+  if(direction){ //Some key pushed related to moving cursor.
+    switch(b) {
+      case 0x4b : return 0xf0;//Left arrow
+      case 0x4d : return 0xf1;//Right arrow
+      case 0x48 : return 0xf2;//Up arrow
+      case 0x50 : return 0xf3;//Down arrow
+    }
+  }
+
+  if(control){ //Some control key has been pushed
+    switch(b) {
+      case 0x10 : return 0xfe; //^q
+      case 0x11 : return 0xfd; //^w
+    }
+  }
+
   switch (b) {
     case 0x02 ... 0x0a : return(ul('0' + b - 1));
     case 0x0b : return(ul('0'));
@@ -130,8 +157,12 @@ static char kbd_get(void) {
     case 0x39 : return (' ');
 
 
-    case 0x2a: case 0x36: shift = 1; return 0;
-    case 0xaa: case 0xb6: shift = 0; return 0;
+    case 0x1d : control = 1; return 255;
+    case 0x9d : control = 0; return 255;
+
+
+    case 0x2a: case 0x36: shift = 1; return 255;
+    case 0xaa: case 0xb6: shift = 0; return 255;
     default: return 255;
   }
 
