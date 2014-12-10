@@ -20,6 +20,7 @@ char* strdup(char* str) {
 
 char* trimSpace(char* strr){
   {
+    //free(strr);
     char* str = malloc(strlen(strr)+1);
     memcpy(str,strr,strlen(strr));
     str[strlen(strr)] = 0;
@@ -127,17 +128,6 @@ int strEquals (const char *str1, const char *str2) {
   return 0;
 }
 
-char* strcat(char *dest, const char *src)
-{
-  int i,j;
-  for (i = 0; dest[i] != '\0'; i++)
-    ;
-  for (j = 0; src[j] != '\0'; j++)
-    dest[i+j] = src[j];
-  dest[i+j] = '\0';
-  return dest;
-}
-
 void strcpy(char* dest, const char* source) {
   int i = 0;
   while (1) {
@@ -145,6 +135,20 @@ void strcpy(char* dest, const char* source) {
     if (dest[i] == '\0') break;
     i++;
   }
+}
+
+void strcat(char *dest, const char *src)
+{
+  /*strcpy(dest + strlen(dest), src);
+  return dest;*/
+  int i,j;
+  for (i = 0; dest[i] != '\0'; i++)
+    ;
+  for (j = 0; src[j] != '\0'; j++)
+    dest[i+j] = src[j];
+  dest[i+j] = '\0';
+  return;
+  //return dest;
 }
 
 char * strncpy(char *dest, const char *src, int n)
@@ -159,9 +163,9 @@ char * strncpy(char *dest, const char *src, int n)
   return dest;
 }
 
-void append(char* subject, const char* insert, int pos) {
-  char* buf = malloc(100); // 100 so that it's big enough. fill with 0
-  // or you could use malloc() to allocate sufficient space
+//This returns a new string with 'insert' added at 'pos' in 'subject'.
+char* append(char* subject, const char* insert, int pos) {
+  char* buf = malloc(strlen(subject) + 2);
 
   strncpy(buf, subject, pos); // copy at most first pos characters
   int len = strlen(buf);
@@ -169,5 +173,7 @@ void append(char* subject, const char* insert, int pos) {
   len += strlen(insert);  // increase the length by length of insert[]
   strcpy(buf+len, subject+pos); // copy the rest
 
-  strcpy(subject, buf);   // copy it back to subject
+  //free(subject);
+  return buf;
+  //strcpy(subject, buf);   // copy it back to subject
 }
