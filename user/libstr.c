@@ -69,7 +69,7 @@ char* trimSpace(char* strr){
 char** tokenize(char* str, int* argc){
 	str = trimSpace(str);
 
-	if(strlen(str) == 0)
+  if(*str == 0)
 		return 0;
 
 	int length = 1;
