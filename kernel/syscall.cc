@@ -168,6 +168,17 @@ extern "C" long syscallHandler(uint32_t* context, long num, long a0, long a1) {
         f->write(buf, len);
         return 0;
       }
+    case 18: /*putcolor*/
+    {
+	long* args = (long*)a0;
+	Console::me->putcolor(args[0], args[1], args[2]);
+	return 0;
+    }
+    case 19: /*move down and to top*/
+    {
+	Console::me->moveToZero();
+	return 0;
+    }
     default:
       Process::trace("syscall(%d,%d,%d)",num,a0,a1);
       return -1;

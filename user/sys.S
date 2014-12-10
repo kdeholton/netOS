@@ -173,3 +173,18 @@ write:
     #TODO: Get args for write
     int $100
     ret
+
+	.global putcolor
+putcolor:
+	mov $18,%eax
+	lea 4(%esp),%ecx
+	mov $0,%edx
+	int $100
+	ret
+
+
+  .global moveToZero
+moveToZero:
+  mov $19, %eax
+  int $100
+  ret

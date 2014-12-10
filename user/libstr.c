@@ -3,7 +3,7 @@
 long strlen(const char* str) {
     long n = 0;
     while (*str++ != 0) n++;
-    return n+1;
+    return n;
 }
 
 char* strdup(char* str) {

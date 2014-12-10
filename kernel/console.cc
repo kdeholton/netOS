@@ -28,8 +28,16 @@ void Console::clear(){
   vga->cursor(0,0,VGA::BLACK,VGA::WHITE);
 }
 
+void Console::moveToZero(){
+	shiftDown();
+	this->row = 0;
+	this->col = 0;
+	vga->cursor(0, 0, VGA::BLACK, VGA::GREEN);
+}
+
 void Console::put(char ch){
-	vga->cursor(row, col, VGA::BLACK, VGA::WHITE);
+	putcolor(ch, VGA::BLACK, VGA::WHITE);
+/*	vga->cursor(row, col, VGA::BLACK, VGA::WHITE);
   if(ch == ~0xf) {//Left arrow key
     cursorLeft();
   }
@@ -54,7 +62,37 @@ void Console::put(char ch){
 		//length = 0;
 		incrementRow();
 	}
-	vga->cursor(row, col, VGA::GREEN, VGA::WHITE);
+	vga->cursor(row, col, VGA::GREEN, VGA::WHITE);*/
+}
+
+
+void Console::putcolor(char ch, int bg, int fg){
+	vga->cursor(row, col, bg, fg);
+  if(ch == ~0xf) {//Left arrow key
+    cursorLeft();
+  }
+  if(ch == ~0xe) {//Right arrow key
+    cursorRight();
+  }
+  if(ch == ~0xd) {//Up arrow key
+    cursorUp();
+  }
+  if(ch == ~0xc) {//Down arrow key
+    cursorDown();
+  }
+	if(ch == 8 || ch == 0x7f){
+		decrementColumn();
+		vga->put(row, col, ' ', bg, fg);
+	}
+	if(ch >= 0x20 && ch <= 0x7e){
+		vga->put(row, col, ch, bg, fg);
+		incrementColumn();
+	}
+	if(ch == '\n'){
+		//length = 0;
+		incrementRow();
+	}
+	vga->cursor(row, col, bg, fg);
 }
 
 void Console::decrementColumn(){
@@ -105,6 +143,16 @@ void Console::shiftUp(){
 	}
 	row--;
 	clearRow(ROWS - 1);
+}
+
+void Console::shiftDown(){
+	for(int r = ROWS - 2; r >= 0; r--){
+		for(int c = 0; c < COLS; c++){
+			vga->put(r + 1, c, vga->get(r, c), vga->getBg(r, c), vga->getFg(r, c));
+		}
+	}
+	row++;
+	clearRow(0);
 }
 
 /*void Console::shiftUpBuf(){

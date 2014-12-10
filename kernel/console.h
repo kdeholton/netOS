@@ -23,7 +23,9 @@ public:
 
 	virtual char get();
 	virtual void put(char ch);
+	virtual void putcolor(char ch, int bg, int fg);
 	virtual void shiftUp();
+	virtual void shiftDown();
 	virtual void clearRow(int r);
 	virtual void incrementColumn();
 	virtual void incrementRow();
@@ -34,6 +36,7 @@ public:
   virtual void cursorRight();
   virtual void cursorUp();
   virtual void cursorDown();
+	virtual void moveToZero();
 };
 
 #endif
