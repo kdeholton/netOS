@@ -69,30 +69,40 @@ public:
     }
 
     int32_t write(void* buf, uint32_t length){
-	//Debug::printf("Writing in openfile\n");
-	//Debug::printf("Length is %d\n", length);
-	//Debug::printf("Writing %s\n", buf);
 	uint32_t blockNumber = start;
-	//Debug::printf("Block number is %d\n", blockNumber);
 	uint32_t oldBlock = 0;
 	uint32_t offset = 0;
+	uint32_t first = 1;
 	while(length > 0){
-		//Debug::printf("still have %d left to write\n", length);
-		if(blockNumber == (uint32_t)-1){
-			//Debug::printf("Block number is -1!!!\n");
+		if(blockNumber == (uint32_t)0){
 			blockNumber = fs->findFreeBlock();
-			fs->fat[blockNumber] = -1;
+			fs->fat[blockNumber] = 0;
 			fs->fat[oldBlock] = blockNumber;
-			//Debug::printf("Our new block is %d\n", blockNumber);
 		}
-		//Debug::printf("About to write to block\n");
-		fs->dev->write(blockNumber * 512, (char*)(buf) + offset, MIN(512, length));
-		//Debug::printf("Came back from device call, buf is %s\n", buf);
-		//Debug::printf("Wrote to the device\n");
+		uint32_t numToWrite = (first ? MIN(504, length) : MIN(512, length));
+		fs->dev->write(blockNumber * 512, (char*)(buf) + offset, numToWrite, first, length);
 		oldBlock = blockNumber;
 		blockNumber = fs->fat[blockNumber];
-		offset += MIN(512, length);
-		length -= MIN(512, length);
+		offset += numToWrite;
+		length -= numToWrite;
+		first = 0;
+	}
+	if(blockNumber != 0){
+		//Debug::printf("fat\n");
+		uint32_t val = fs->super.avail;
+		while(val != 0){
+			//Debug::printf("%d->", val);
+			val = fs->fat[val];
+		}
+		//Debug::printf("\nremaining in file\n");
+		val = blockNumber;
+		while(val != 0){
+			//Debug::printf("%d->", val);
+			val = fs->fat[val];
+		}
+		//Debug::printf("\n");
+		fs->addToAvail(blockNumber);
+		fs->fat[oldBlock] = 0;
 	}
 	return 0;
     }
@@ -140,7 +150,6 @@ public:
     }
 
     virtual int32_t write(void* buf, uint32_t length){
-	Debug::printf("Writing in Fat439File\n");
 	long val = openFile->write(buf, length);
 	return val;
     }
