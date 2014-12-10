@@ -18,7 +18,7 @@ public:
 
     uint32_t read(uint32_t offset, void* buffer, uint32_t count);
 
-    uint32_t write(uint32_t offset, void* buffer, uint32_t count);
+    uint32_t write(uint32_t offset, void* buffer, uint32_t count, uint32_t first, uint32_t headerSize);
     /* read count bytes starting at offset */
     void readFully(uint32_t offset, void* buffer, uint32_t count);
 };

@@ -82,6 +82,7 @@ public:
 
      FileSystem(BlockDevice *dev) : dev(dev) {}
      virtual uint32_t findFreeBlock() = 0;
+     virtual void addToAvail(uint32_t block) = 0;
 };
 
 /**************************/
@@ -106,13 +107,19 @@ public:
     OpenFile* openFile(uint32_t start);
     void closeFile(OpenFile* of);
     virtual uint32_t findFreeBlock(){
-	for(uint32_t i = 0; i < super.nBlocks; i++){
-		if(fat[i] == (uint32_t)-1){
-			return i;
-		}
+	int val = super.avail;
+	super.avail = fat[super.avail];
+	return val;
+    }
+    virtual void addToAvail(uint32_t blockNumber){
+	uint32_t val = super.avail;
+	while(fat[val] != 0){
+	    val = fat[val];
 	}
-	return (uint32_t)-1;
-}
+	//Debug::printf("added free block to fat at %d\n", val);
+	fat[val] = blockNumber;
+    }
+
 };
 
 #endif

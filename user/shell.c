@@ -91,6 +91,7 @@ puts("\n\n\n\n\n\n\n\n\n\n");
 		else{ //PARENT
 			join(id);
 		}
+		close(ret);
 	}
 	if (in) free(in);
     }
