@@ -22,19 +22,23 @@ char* gets() {
     }
     char c = getchar();
     if(c == ~0xf){ //Left Arrow == 0xf0
-      puts("L");
+      //puts("L");
+      putchar(~0xf);
       continue;
     }
     if(c == ~0xe){ //Right Arrow == 0xf1
-      puts("R");
+      //puts("R");
+      putchar(~0xe);
       continue;
     }
     if(c == ~0xd){ //Up Arrow == 0xf2
-      puts("U");
+      //puts("U");
+      putchar(~0xd);
       continue;
     }
     if(c == ~0xc){ //Down Arrow == 0xf3
-      puts("D");
+      //puts("D");
+      putchar(~0xc);
       continue;
     }
     if(c == ~0x1){ //^q == 0xfe

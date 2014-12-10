@@ -30,6 +30,10 @@ public:
 	virtual void decrementColumn();
 	virtual void decrementRow();
   virtual void clear();
+  virtual void cursorLeft();
+  virtual void cursorRight();
+  virtual void cursorUp();
+  virtual void cursorDown();
 };
 
 #endif
