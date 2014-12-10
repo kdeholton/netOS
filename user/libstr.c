@@ -126,3 +126,48 @@ int strEquals (const char *str1, const char *str2) {
 
 	return 0;
 }
+
+char* strcat(char *dest, const char *src)
+{
+  int i,j;
+  for (i = 0; dest[i] != '\0'; i++)
+    ;
+  for (j = 0; src[j] != '\0'; j++)
+    dest[i+j] = src[j];
+  dest[i+j] = '\0';
+  return dest;
+}
+
+void strcpy(char* dest, const char* source) {
+  int i = 0;
+  while (1) {
+    dest[i] = source[i];
+    if (dest[i] == '\0') break;
+    i++;
+  }
+}
+
+char * strncpy(char *dest, const char *src, int n)
+{
+  int i;
+
+  for (i = 0; i < n && src[i] != '\0'; i++)
+    dest[i] = src[i];
+  for ( ; i < n; i++)
+    dest[i] = '\0';
+
+  return dest;
+}
+
+void append(char* subject, const char* insert, int pos) {
+  char* buf = malloc(100); // 100 so that it's big enough. fill with 0
+  // or you could use malloc() to allocate sufficient space
+
+  strncpy(buf, subject, pos); // copy at most first pos characters
+  int len = strlen(buf);
+  strcpy(buf+len, insert); // copy all of insert[] at the end
+  len += strlen(insert);  // increase the length by length of insert[]
+  strcpy(buf+len, subject+pos); // copy the rest
+
+  strcpy(subject, buf);   // copy it back to subject
+}
