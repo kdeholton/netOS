@@ -186,3 +186,12 @@ char* append(char* subject, char* insert, int pos) {
   return buf;
   //strcpy(subject, buf);   // copy it back to subject
 }
+
+char* deleteChar(char* str, int pos){
+	char* newChar = malloc(strlen(str));
+	memcpy(newChar, str, pos);
+	memcpy(newChar+pos, str + pos + 1, strlen(str) - pos);
+	newChar[strlen(str)] = 0;
+	free(str);
+	return newChar;
+}
