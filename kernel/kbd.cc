@@ -11,7 +11,7 @@ InputStream<char> *Keyboard::is;
 BB<char> *bb;
 
 void Keyboard::init() {
-  bb = new BB<char>(100);
+  bb = new BB<char>(1000);
   is = bb;
 }
 

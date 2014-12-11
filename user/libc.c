@@ -13,32 +13,45 @@ char* gets() {
   long sz = 0;
   char *p = 0;
   long i = 0;
+  long realsz = 0;
+  long sem = semaphore(1);
 
   while (1) {
     if (i >= sz) {
+      down(sem);
       sz += 10;
       p = realloc(p,sz+1);
+      for(int j = realsz; j < sz+1; j++){
+	p[j] = 0;
+      }
+      up(sem);
       if (p == 0) return 0;
     }
     char c = getchar();
     if(c == ~0xf){ //Left Arrow == 0xf0
       //puts("L");
-      putchar(~0xf);
+      if(i > 0){
+	putchar(~0xf);
+	i--;
+      }
       continue;
     }
     if(c == ~0xe){ //Right Arrow == 0xf1
       //puts("R");
-      putchar(~0xe);
+      if(i < realsz){
+	putchar(~0xe);
+	i++;
+      }
       continue;
     }
     if(c == ~0xd){ //Up Arrow == 0xf2
       //puts("U");
-      putchar(~0xd);
+      //putchar(~0xd);
       continue;
     }
     if(c == ~0xc){ //Down Arrow == 0xf3
       //puts("D");
-      putchar(~0xc);
+      //putchar(~0xc);
       continue;
     }
     if(c == ~0x1){ //^q == 0xfe
@@ -49,21 +62,58 @@ char* gets() {
       puts("[^w]");
       continue;
     }
-    if(c == 8 || c == 0x7f){
+    if(c == 8 || c == 0x7f){ // backspace
       //puts(p);
       if(i > 0){
+	down(sem);
+	i--;
+	realsz--;
+	for(int j = i; j < realsz; j++){
+		p[j] = p[j+1];
+	}
         putchar(c);
-        p[i--] = 0;
+        p[realsz] = 0;
+	up(sem);
       }
       continue;
     }
+    down(sem);
     putchar(c);
-    if (c == 13) {
+    if (c == 13) { // enter
       puts("\n");
-      p[i] = 0;
+      realsz++;
+      p[realsz-1] = 0;
+      up(sem);
       return p;
     }
-    p[i++] = c;        
+    realsz++;
+    if(p[i] != 0){
+	for(int j = realsz-1; j > i; j--){
+	    p[j] = p[j-1];
+	}
+	p[i++] = c;
+	for(int j = 0; j < i; j++){
+	    putchar(~0xf);
+	}
+	for(int j = 0; j < realsz; j++){
+	    putchar(p[j]);
+	}
+	for(int j = i; j < realsz; j++){
+	    putchar(~0xf);
+	}
+        up(sem);
+/*	for(int j = i; j < realsz-1; j++){
+	    putchar(0x7f);
+	}
+
+	for(int j = i; j < realsz-1; j++){
+	    putchar(p[j]);
+	}*/
+    }
+    else{
+	p[i++] = c;
+	up(sem);
+    }
   }
 }
 
