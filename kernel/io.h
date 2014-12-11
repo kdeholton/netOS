@@ -3,7 +3,7 @@
 
 template<typename T> class OutputStream {
 public:
-    virtual void put(T v) = 0;
+    virtual int put(T v) = 0;
 };
 
 template<typename T> class InputStream {

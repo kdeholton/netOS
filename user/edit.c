@@ -1,17 +1,38 @@
 #include "libc.h"
 #include "libstr.c"
 
+int numberOfLines(char* line){
+  return strlen(line)/80 + 1;
+}
+
 struct listNode {
   char* line;
   struct listNode* next;
   struct listNode* prev;
 };
 
-struct listNode* currentLine;
+struct listNode* currentTopLine;
+int offset;
 
-int numberOfLines(char* line){
-  return strlen(line)/80 + 1;
+void display(struct listNode* currentTopLine){
+  clear();
+  int linesPut = 0;
+  struct listNode* currentLine = currentTopLine;
+  while(linesPut <= 25){
+    if(currentLine == 0 || currentLine->line == 0)
+      break;
+    if(25 - linesPut < numberOfLines(currentLine->line))
+      break;
+    if(linesPut != 0)
+      puts("\n");
+    linesPut += numberOfLines(currentLine->line);
+    puts(currentLine->line);
+    currentLine = currentLine->next;
+  }
+
 }
+
+struct listNode* currentLine;
 
 void printHead(struct listNode* head){
 	struct listNode* current = head;
@@ -156,15 +177,17 @@ int main(int argc, char** argv){
     currentLine->next = 0;
     //puts("BEFORE WRITE: \n");
     //printHead(head);
-    char* gotten = gets();
-    currentLine->line = append(currentLine->line, gotten, strlen(currentLine->line)); //The strlen appends to the end of the line.
+    display(head);
+    setCursor(0,0);
+    //char* gotten = gets();
+    getbuf(head, 0);
+    close(fd);
+    //currentLine->line = append(currentLine->line, gotten, strlen(currentLine->line)); //The strlen appends to the end of the line.
 
     //TODO This is where I need to actually move the cursor and 
     //     append in the middle of strings and things.
     //     I'm gonna write a display method though, I think.
     
-    writeFile(fd,head);
-
 
     //This prints out the linked list, debugging purposes.
     /*currentLine = head;
@@ -242,4 +265,91 @@ int main(int argc, char** argv){
 
   puts("end of edit!\n");
   return 0;
+}
+
+char* getbuf(struct listNode* current, struct listNode* head, long fd) {
+  struct listNode* currentLine = current;
+  long sz = 0;
+  char *p = 0;
+  long i = 0;
+
+  while (1) {
+    if (i >= sz) {
+      sz += 10;
+      p = realloc(p,sz+1);
+      if (p == 0) return 0;
+    }
+    char c = getchar();
+    if(c == ~0xf){ //Left Arrow == 0xf0
+      //puts("L");
+      putchar(~0xf);
+      continue;
+    }
+    if(c == ~0xe){ //Right Arrow == 0xf1
+      //puts("R");
+      putchar(~0xe);
+      continue;
+    }
+    if(c == ~0xd){ //Up Arrow == 0xf2
+      //puts("U");
+      int i =  putchar(~0xd);
+      if(i == 1){ //This is a shift down.
+        if(currentLine->prev != 0){
+          currentLine = currentLine->prev;
+          int x = getRow();
+          int y = getColumn();
+          display(currentLine);
+          setCursor(x,y);
+        }
+        /*if(currentTopLine->prev != 0){
+          currentTopLine = currentTopLine->prev;
+          display(currentTopLine);
+        }*/
+      }
+      continue;
+    }
+    if(c == ~0xc){ //Down Arrow == 0xf3
+      //puts("D");
+      if(putchar(~0xc) == 2){ //This is a shift up.
+        if(currentLine->next != 0){
+          currentLine = currentLine->next;
+          int x = getRow();
+          int y = getColumn();
+          display(currentLine);
+          setCursor(x,y);
+        }
+        /*if(currentTopLine->next != 0){
+          currentTopLine = currentTopLine->next;
+          display(currentTopLine);
+        }*/
+      }
+      continue;
+    }
+    if(c == ~0x1){ //^q == 0xfe EXIT
+      clear();
+      writeFile(fd,head);
+      return 0;
+    }
+    if(c == ~0x2){ //^w == 0xfd
+      puts("***");
+      puts(currentLine->line);
+      puts("\n");
+      continue;
+    }
+    if(c == 8 || c == 0x7f){
+      //puts(p);
+      if(i > 0){
+        putchar(c);
+        p[i--] = 0;
+      }
+      continue;
+    }
+    putchar(c);
+    if (c == 13) {
+      puts("\n");
+      p[i] = 0;
+      return p;
+    }
+    p[i++] = c;        
+  }
 }

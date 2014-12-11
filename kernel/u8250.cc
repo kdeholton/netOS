@@ -6,9 +6,10 @@
 
 U8250 *U8250::it = nullptr;
 
-void U8250::put(char c) {
+int U8250::put(char c) {
     while (!(inb(0x3F8+5) & 0x20));
     outb(0x3F8,c);
+    return 0;
 }
 
 char U8250::get() {

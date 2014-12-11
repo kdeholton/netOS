@@ -19,13 +19,14 @@ public:
     BB(int n) : arr(new T[n]),n(n),head(0),tail(0),nFull(0),nEmpty(n),mutex(1) {
     }
 
-    void put(T v) {
+    int put(T v) {
         nEmpty.down();
         mutex.down();
         arr[tail++]  = v;
         if (tail == n) tail = 0;
         mutex.up();
         nFull.up();
+        return 0;
     }    
 
     T get() {

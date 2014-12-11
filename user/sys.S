@@ -182,9 +182,28 @@ putcolor:
 	int $100
 	ret
 
-
   .global moveToZero
 moveToZero:
   mov $19, %eax
+  int $100
+  ret
+
+  .global getRow
+getRow:
+  mov $20, %eax
+  int $100
+  ret
+
+  .global getColumn
+getColumn:
+  mov $21, %eax
+  int $100
+  ret
+
+  .global setCursor
+setCursor:
+  mov $22, %eax
+  mov 4(%esp), %ecx
+  mov 8(%esp), %edx
   int $100
   ret

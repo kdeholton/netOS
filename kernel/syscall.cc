@@ -21,7 +21,7 @@ extern "C" long syscallHandler(uint32_t* context, long num, long a0, long a1) {
       return -1;
     case 1: /* putchar */
       //if((a0 >= 0x20 && a0 <= 0x7e) || a0 == 0xA){
-      Debug::printf("%c",a0);
+      return Console::me->put(a0);
       //}
       return 0;
     case 2: /* fork */
@@ -169,16 +169,29 @@ extern "C" long syscallHandler(uint32_t* context, long num, long a0, long a1) {
         return 0;
       }
     case 18: /*putcolor*/
-    {
-	long* args = (long*)a0;
-	Console::me->putcolor(args[0], args[1], args[2]);
-	return 0;
-    }
+      {
+        long* args = (long*)a0;
+        Console::me->putcolor(args[0], args[1], args[2]);
+        return 0;
+      }
     case 19: /*move down and to top*/
-    {
-	Console::me->moveToZero();
-	return 0;
-    }
+      {
+        Console::me->moveToZero();
+        return 0;
+      }
+    case 20: /* get row of the cursor*/
+      {
+        return Console::me->getRow();
+      }
+    case 21: /* get col of the cursor*/
+      {
+        return Console::me->getColumn();
+      }
+    case 22: /* set row and col of the cursor*/
+      {
+        Console::me->setCursor(a0, a1);
+        return 0;
+      }
     default:
       Process::trace("syscall(%d,%d,%d)",num,a0,a1);
       return -1;

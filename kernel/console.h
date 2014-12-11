@@ -22,8 +22,8 @@ public:
 	static void init(U8250* u, Console* c);
 
 	virtual char get();
-	virtual void put(char ch);
-	virtual void putcolor(char ch, int bg, int fg);
+	virtual int put(char ch);
+	virtual int putcolor(char ch, int bg, int fg);
 	virtual void shiftUp();
 	virtual void shiftDown();
 	virtual void clearRow(int r);
@@ -32,11 +32,14 @@ public:
 	virtual void decrementColumn();
 	virtual void decrementRow();
   virtual void clear();
-  virtual void cursorLeft();
-  virtual void cursorRight();
-  virtual void cursorUp();
-  virtual void cursorDown();
+  virtual int cursorLeft();
+  virtual int cursorRight();
+  virtual int cursorUp();
+  virtual int cursorDown();
 	virtual void moveToZero();
+  virtual int getRow();
+  virtual int getColumn();
+  virtual void setCursor(int x, int y);
 };
 
 #endif

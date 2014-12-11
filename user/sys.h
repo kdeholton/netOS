@@ -21,5 +21,8 @@ extern long sleep(int amt);
 extern long write(long f, void* buf, long len);
 extern long moveToZero();
 extern long putcolor(char c, long bg, long fg);
+extern long getRow();
+extern long getColumn();
+extern void setCursor(int x, int y);
 
 #endif

@@ -15,7 +15,7 @@ public:
     }
 
     U8250() {}
-    virtual void put(char ch);
+    virtual int put(char ch);
     virtual char get();
 };
 
