@@ -137,16 +137,17 @@ void strcpy(char* dest, const char* source) {
   }
 }
 
-void strcat(char *dest, const char *src)
+void strcat(char *dest, char *src)
 {
   /*strcpy(dest + strlen(dest), src);
   return dest;*/
-  int i,j;
+  int i;
   for (i = 0; dest[i] != '\0'; i++)
     ;
-  for (j = 0; src[j] != '\0'; j++)
-    dest[i+j] = src[j];
-  dest[i+j] = '\0';
+//  for (j = 0; src[j] != '\0'; j++)
+//    dest[i+j] = src[j];
+  memcpy(dest + i, src, strlen(src));
+  //dest[i+j] = '\0';
   return;
   //return dest;
 }
@@ -164,8 +165,13 @@ char * strncpy(char *dest, const char *src, int n)
 }
 
 //This returns a new string with 'insert' added at 'pos' in 'subject'.
-char* append(char* subject, const char* insert, int pos) {
-  char* buf = malloc(strlen(subject) + 2);
+char* append(char* subject, char* insert, int pos) {
+  char* buf = malloc(strlen(subject) + strlen(insert) + 1);
+  memcpy(buf, subject, pos);
+  memcpy(buf + pos, insert, strlen(insert));
+  memcpy(buf + pos + strlen(insert), subject + pos, strlen(subject) - pos);
+  buf[strlen(subject) + strlen(insert)] = 0;
+/*  char* buf = malloc(strlen(subject) + 2);
 
   strncpy(buf, subject, pos); // copy at most first pos characters
   int len = strlen(buf);
@@ -174,6 +180,9 @@ char* append(char* subject, const char* insert, int pos) {
   strcpy(buf+len, subject+pos); // copy the rest
 
   //free(subject);
+*/
+  free(subject);
+  free(insert);
   return buf;
   //strcpy(subject, buf);   // copy it back to subject
 }

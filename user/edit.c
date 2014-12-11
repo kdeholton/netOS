@@ -13,69 +13,92 @@ int numberOfLines(char* line){
   return strlen(line)/80 + 1;
 }
 
-int writeFile(int fd, struct listNode* head){
-  puts("01\n");
+void printHead(struct listNode* head){
+	struct listNode* current = head;
+	while(current != 0){
+		if(current->line == 0){
+			puts("YOU DONE FUCKED UP NOW\n");
+		}
+		puts(current->line); puts("\n");
+		current = current->next;
+	}
+}
 
+int writeFile(int fd, struct listNode* head){
+//  puts("HEAD IS CURRENTLY:\n");
+//  printHead(head);
+//  puts("\n");
+//  puts("Writing!\n");
+//  puts("fd : "); putdec(fd); puts("\n");
+//  puts("head : "); puthex((long)head); puts("\n");
   int size = 0;
-  puts("02\n");
 
   //Tally up the size
   struct listNode* currentLine;
-  puts("03\n");
   currentLine = head;
-  puts("04\n");
   while(1){
-  puts("05\n");
     if(currentLine == 0 || currentLine->line == 0)
       break;
-  puts("06\n");
 
     size += strlen(currentLine->line);
-  puts("07\n");
     size += 1; //Add a char for the '\n' that goes between lines;
-  puts("08\n");
     
     currentLine = currentLine->next;
-  puts("09\n");
   }
   puts("size:");
   putdec(size);
   puts("\n");
-
-  //Create a buffer of correct size
-  puts("11\n");
-  char* buffer = malloc(size + 1); //Add one for null termination.
-  puts("12\n");
   currentLine = head;
-  puts("13\n");
+  //printHead(currentLine);
+  //Create a buffer of correct size
+  char* buffer = malloc(size + 1); //Add one for null termination.
+  for(int i = 0; i < size + 1; i++){
+     buffer[i] = 0;
+  }
+  char* newline = malloc(1);
+  newline[0] = '\n';
+  int val = 0;
   while(1){
-  puts("14\n");
     if(currentLine == 0 || currentLine->line == 0)
       break;
-  puts("15\n");
-
-    char* newline = malloc(2);
-  puts("16\n");
-    newline[0] = '\n';
-  puts("17\n");
-    newline[1] = 0;
-  puts("18\n");
-
-    strcat(buffer, currentLine->line);
-  puts("19\n");
-    strcat(buffer,newline);
-  puts("20\n");
+//    puts("Concat: \n"); puts(currentLine->line); puts("\n");
+    memcpy(buffer + val, currentLine->line, strlen(currentLine->line));
+    val += strlen(currentLine->line);
+    buffer[val] = '\n';
+    val++;
+    if(val > size){
+        putdec(val); puts(" IS GREATER THAN "); putdec(size);
+	puts("\nYOU ARE DUM\n");
+    }
+//    strcat(buffer, currentLine->line);
+//    strcat(buffer,newline);
 
     currentLine = currentLine->next;
-  puts("21\n");
   }
-
-  //Write that buffer back to disk
-  puts("22\n");
   buffer[size] = 0;
-  puts("23\n");
+  free(newline);
+//  puts("Here we are\n");
+  currentLine = head;
+  while(currentLine != 0 && currentLine->line != 0){
+//	puts("ready to free line\n");
+	free(currentLine->line);
+	if(currentLine->next == 0){
+//		puts("freeing the last one\n");
+		free(currentLine);
+		break;
+	}
+	else{
+//		puts("freeing one\n");
+		currentLine = currentLine->next;
+		free(currentLine->prev);
+	}
+  }
+//  puts("buffer is: \n");
+  puts(buffer);
+  //Write that buffer back to disk
+  buffer[size] = 0;
   write(fd, buffer, size);
-  puts("24\n");
+  free(buffer);
   return 0;
 }
 
@@ -104,8 +127,9 @@ int main(int argc, char** argv){
 
     struct listNode* head = (struct listNode*)malloc(sizeof(struct listNode));
     currentLine = head;
-    struct listNode* last = 0;
     currentLine->next = 0;
+    currentLine->prev = 0;
+    currentLine->line = 0;
 
     //This reads the file in to the linked list structure.
     int oldHead = 0;
@@ -114,12 +138,12 @@ int main(int argc, char** argv){
       if(buffer[oldTail] == '\n'){
         currentLine->line = malloc(oldTail-oldHead + 1);
         memcpy(currentLine->line, (void*)&(buffer[oldHead]), oldTail-oldHead);
+	currentLine->line[oldTail-oldHead] = 0;
         oldHead = oldTail + 1;
 
         currentLine->next = (struct listNode*)malloc(sizeof(struct listNode));
         currentLine->next->prev = currentLine;
         currentLine->next->next = 0;
-        currentLine->prev = last;
         currentLine = currentLine->next;
 
       }
@@ -127,6 +151,11 @@ int main(int argc, char** argv){
       oldTail++;
     }
     currentLine = currentLine->prev; // Make sure that the current line is the last line that was read in.
+    free(currentLine->next);
+    free(buffer);
+    currentLine->next = 0;
+    //puts("BEFORE WRITE: \n");
+    //printHead(head);
     char* gotten = gets();
     currentLine->line = append(currentLine->line, gotten, strlen(currentLine->line)); //The strlen appends to the end of the line.
 

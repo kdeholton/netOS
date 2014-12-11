@@ -1,4 +1,4 @@
-PROGS = shell ls shutdown echo cat ping clear sl edit forkbomb test test2 cmatrix
+PROGS = shell ls shutdown echo cat ping clear sl edit forkbomb test test2 cmatrix teststr
 
 all : $(PROGS)
 
@@ -29,6 +29,8 @@ test : CFILES=test.c libc.c heap.c
 test2 : CFILES=test2.c libc.c heap.c
 
 cmatrix: CFILES=cmatrix.c libc.c heap.c
+
+teststr: CFILES=teststr.c libc.c heap.c
 
 $(PROGS) : % : Makefile $(OFILES)
 	ld -N -m elf_i386 -e start -Ttext=0x80000000 -o $@ $(OFILES)

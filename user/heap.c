@@ -123,7 +123,6 @@ static int isTaken(int i) {
 }
     
 void* malloc(long bytes) {
-    //Debug::printf("malloc(%d)\n",bytes);
     if (bytes == 0) return (void*) array;
 
     int ints = ((bytes + 3) / 4) + 2;
