@@ -2,7 +2,7 @@
 #include "libstr.c"
 
 int numberOfLines(char* line){
-  return strlen(line)/80 + 1;
+  return (strlen(line)+1)/80 + 1;
 }
 
 struct listNode {
@@ -29,6 +29,25 @@ void display(struct listNode* currentTopLine){
     puts(currentLine->line);
     currentLine = currentLine->next;
   }
+
+}
+
+struct listNode* accountForNonprinted(struct listNode* currentTopLine, struct listNode* myLine){
+  clear();
+  int linesPut = 0;
+  struct listNode* currentLine = currentTopLine;
+  while(linesPut <= 25){
+    if(currentLine == 0 || currentLine->line == 0)
+      break;
+    if(25 - linesPut < numberOfLines(currentLine->line))
+      return 0;
+    if(linesPut != 0)
+      puts("\n");
+    linesPut += numberOfLines(currentLine->line);
+    puts(currentLine->line);
+    currentLine = currentLine->next;
+  }
+  return 0;
 
 }
 
@@ -179,6 +198,7 @@ int main(int argc, char** argv){
     //printHead(head);
     display(head);
     setCursor(0,0);
+    offset = 0;
     //char* gotten = gets();
     getbuf(head, 0);
     close(fd);
@@ -269,6 +289,7 @@ int main(int argc, char** argv){
 
 char* getbuf(struct listNode* current, struct listNode* head, long fd) {
   struct listNode* currentLine = current;
+  struct listNode* myLine = current;
   long sz = 0;
   char *p = 0;
   long i = 0;
@@ -281,47 +302,69 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
     }
     char c = getchar();
     if(c == ~0xf){ //Left Arrow == 0xf0
-      //puts("L");
-      putchar(~0xf);
+      if(offset > 0){
+        putchar(~0xf);
+        offset--;
+      }
       continue;
     }
     if(c == ~0xe){ //Right Arrow == 0xf1
-      //puts("R");
-      putchar(~0xe);
+      if(offset < strlen(myLine->line)){
+        putchar(~0xe);
+        offset++;
+      }
       continue;
     }
     if(c == ~0xd){ //Up Arrow == 0xf2
-      //puts("U");
-      int i =  putchar(~0xd);
-      if(i == 1){ //This is a shift down.
-        if(currentLine->prev != 0){
-          currentLine = currentLine->prev;
-          int x = getRow();
-          int y = getColumn();
-          display(currentLine);
-          setCursor(x,y);
+      if(myLine->prev == 0)
+        continue;
+      int numLines = numberOfLines(myLine->prev->line);
+      int j;
+      if(myLine->prev != 0){
+        myLine = myLine->prev;
+      }
+      for(j = 0; j<numLines; j++){
+        int i =  putchar(~0xd);
+        if(i == 1){ //This is a shift down.
+          if(currentLine->prev != 0){
+            currentLine = currentLine->prev;
+            int x = getRow();
+            int y = getColumn();
+            display(currentLine);
+            setCursor(x,y);
+          }
+          /*if(currentTopLine->prev != 0){
+            currentTopLine = currentTopLine->prev;
+            display(currentTopLine);
+            }*/
         }
-        /*if(currentTopLine->prev != 0){
-          currentTopLine = currentTopLine->prev;
-          display(currentTopLine);
-        }*/
       }
       continue;
     }
     if(c == ~0xc){ //Down Arrow == 0xf3
-      //puts("D");
-      if(putchar(~0xc) == 2){ //This is a shift up.
-        if(currentLine->next != 0){
-          currentLine = currentLine->next;
-          int x = getRow();
-          int y = getColumn();
-          display(currentLine);
-          setCursor(x,y);
+      if(myLine->next == 0)
+        return 0;
+      int numLines = numberOfLines(myLine->line);
+      int j;
+      if(myLine->next != 0){
+        myLine = myLine->next;
+      }
+      for(j = 0; j<numLines; j++){
+        int i = putchar(~0xc);
+        if(i == 2){ //This is a shift up.
+          if(currentLine->next != 0){
+            currentLine = currentLine->next;
+            int z = numberOfLines(currentLine->prev->line);
+            int x = getRow();
+            int y = getColumn();
+            display(currentLine);
+            setCursor(x-z,y);
+          }
+          /*if(currentTopLine->next != 0){
+            currentTopLine = currentTopLine->next;
+            display(currentTopLine);
+            }*/
         }
-        /*if(currentTopLine->next != 0){
-          currentTopLine = currentTopLine->next;
-          display(currentTopLine);
-        }*/
       }
       continue;
     }
@@ -332,7 +375,7 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
     }
     if(c == ~0x2){ //^w == 0xfd
       puts("***");
-      puts(currentLine->line);
+      puts(myLine->line);
       puts("\n");
       continue;
     }
