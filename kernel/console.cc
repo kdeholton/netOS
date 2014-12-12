@@ -204,8 +204,10 @@ int Console::cursorUp(){
   if(row<0){
     //shiftDown();
     row++;
+    vga->cursor(row,col,VGA::BLACK,VGA::WHITE);
     return 1;
   }
+  vga->cursor(row,col,VGA::BLACK,VGA::WHITE);
   return 0;
 }
 
@@ -214,8 +216,10 @@ int Console::cursorDown(){
   if(row >= ROWS){
     row--;
     //shiftUp();
+    vga->cursor(row,col,VGA::BLACK,VGA::WHITE);
     return 2;
   }
+  vga->cursor(row,col,VGA::BLACK,VGA::WHITE);
   return 0;
 }
 
