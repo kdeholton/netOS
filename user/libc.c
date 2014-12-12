@@ -71,7 +71,14 @@ char* gets() {
 	for(int j = i; j < realsz; j++){
 		p[j] = p[j+1];
 	}
-        putchar(c);
+	putchar(~0xf);
+	for(int j = i; j < realsz; j++){
+	    putchar(p[j]);
+	}
+	putchar(' ');
+	for(int j = i; j < realsz+1; j++){
+	    putchar(~0xf);
+	}
         p[realsz] = 0;
 	up(sem);
       }
@@ -92,10 +99,10 @@ char* gets() {
 	    p[j] = p[j-1];
 	}
 	p[i++] = c;
-	for(int j = 0; j < i; j++){
+/*	for(int j = 0; j < i; j++){
 	    putchar(~0xf);
-	}
-	for(int j = 0; j < realsz; j++){
+	}*/
+	for(int j = i; j < realsz; j++){
 	    putchar(p[j]);
 	}
 	for(int j = i; j < realsz; j++){

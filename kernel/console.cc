@@ -3,11 +3,16 @@
 #include "console.h"
 #include "kbd.h"
 
+#define NEWCOL(R, C) (C+1 == COLS ? R+1 : R)
+#define NEWROW(R, C) (C+1 == COLS ? 0 : C+1)
+
 U8250 *Console::u8250 = nullptr;
 Console* Console::me = nullptr;
+Mutex* Console::mutex = nullptr;
 
 
 void Console::init(U8250* u, Console* c){
+	mutex = new Mutex();
 	U8250::init(u);
   Keyboard::init();
 	u8250 = u;
@@ -67,34 +72,39 @@ int Console::put(char ch){
 
 
 int Console::putcolor(char ch, int bg, int fg){
-  int retVal = 0;
+	int retVal = 0;
 	vga->cursor(row, col, bg, fg);
-  if(ch == ~0xf) {//Left arrow key
-    cursorLeft();
-  }
-  if(ch == ~0xe) {//Right arrow key
-    cursorRight();
-  }
-  if(ch == ~0xd) {//Up arrow key
-    return cursorUp();
-  }
-  if(ch == ~0xc) {//Down arrow key
-    return cursorDown();
-  }
-	if(ch == 8 || ch == 0x7f){
+	if(ch == ~0xf) {//Left arrow key
+		cursorLeft();
+	}
+	if(ch == ~0xe) {//Right arrow key
+		cursorRight();
+	}
+	if(ch == ~0xd) {//Up arrow key
+		return cursorUp();
+	}
+	if(ch == ~0xc) {//Down arrow key
+		return cursorDown();
+	}
+	if(ch == 8 || ch == 0x7f){ // backspace
 		decrementColumn();
 		vga->put(row, col, ' ', bg, fg);
+		for(int i = col; i < COLS-1; i++){
+			vga->put(row, i, vga->get(row, i+1), bg, fg);
+		}
+		vga->put(row, COLS-1, ' ', bg, fg);
 	}
 	if(ch >= 0x20 && ch <= 0x7e){
 		vga->put(row, col, ch, bg, fg);
 		incrementColumn();
+		
 	}
 	if(ch == '\n'){
 		//length = 0;
 		incrementRow();
 	}
 	vga->cursor(row, col, bg, fg);
-  return retVal;
+	return retVal;
 }
 
 void Console::decrementColumn(){
@@ -133,7 +143,9 @@ void Console::incrementRow(){ // Sets col to 0
 
 char Console::get(){
 	//char ch = u8250->get();
+	mutex->lock();
   char ch = Keyboard::is->get();
+	mutex->unlock();
 	return ch;
 }
 

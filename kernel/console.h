@@ -4,6 +4,7 @@
 #include "vga.h"
 #include "io.h"
 #include "u8250.h"
+#include "semaphore.h"
 
 class Console : public OutputStream<char>{
 	VGA* vga;
@@ -14,6 +15,7 @@ class Console : public OutputStream<char>{
 public:
 	static U8250* u8250;
 	static Console* me;
+	static Mutex* mutex;
 	Console() {
 		vga = new VGA();
 		length = 0;
