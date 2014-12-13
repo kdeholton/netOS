@@ -397,7 +397,7 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
     }
     if(c == 8 || c == 0x7f){ //Backspace
       if(offset == 0){
-        if(myLine->prev != 0 && myLine->prev->line != 0){ //Here, we need to remove the newline. make two node
+        if(myLine->prev != 0 && myLine->prev->line != 0){ //Here, we need to remove the newline. join two node
           //decrementOnlyRow();
           int len = strlen(myLine->prev->line);
           int x = getRow();
@@ -406,7 +406,8 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
           struct listNode* next = myLine->next;
           myLine = myLine->prev;
           myLine->next = next;
-          next->prev = myLine;
+          if(next != 0)
+            next->prev = myLine;
           free(toDelete->line);
           free(toDelete);
           if(x == 0){ //Here, we are at the top of the screen, trying to delete. need to scroll back up some.
