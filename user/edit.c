@@ -408,14 +408,23 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
 
       //Update pointers
       myLine->next = newNode;
-      newNode->next->prev = newNode;
+      if(newNode->next != 0)
+        newNode->next->prev = newNode;
       myLine = newNode;
 
       offset = 0;
 
       int x = getRow();
+      int diff = 25 - x - numberOfLines(myLine->line);
+      int count = 0;
+      while(diff <= 0){
+        int lines = numberOfLines(currentLine->line);
+         diff += lines;
+         count += lines;
+         currentLine = currentLine->next;
+      }
       display(currentLine);
-      setCursor(x + 1, 0);
+      setCursor(x + 1 - count , 0);
       continue;
     }
 
@@ -468,6 +477,7 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
 
     //If we get here, this means we have an actual character to type!!
     //This is where we want to stick it in the buffer of the linked list node.
+    //TODO Account for going off the edge of the screen
     if(c == 'a'){
       int x = getRow();
       int y = getColumn();
