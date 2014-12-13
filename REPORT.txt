@@ -4,19 +4,71 @@ TEAM:
 
 PROJECT:
 
-We implemented a writable file system and a file editor.  The project now runs in vga mode, and can use arrow keys and a select number of control commands.  In order to make a writable file system, we needed a "write" syscall that would replace a file with the contents of a buffer passed in.  The write syscall takes a file id, a buffer, and a number of bytes to write.  The write system call works much like the read system call does: it goes from the syscall handler to the Fat439File class, to the OpenFile class.  From there, it iterates over the block device and writes the appropriate number of bytes.  If the number of bytes being written is more than the current file, then the file system automatically allocates the appropriate number of blocks from the "available" lis in the Fat.  If it is writing a file smaller than the current file, it adds the remaining blocks back to the avail list.
+We implemented a writable file system and a file editor.  The project now runs
+in vga mode, and can use arrow keys and a select number of control commands.  In
+order to make a writable file system, we needed a "write" syscall that would
+replace a file with the contents of a buffer passed in.  The write syscall takes
+a file id, a buffer, and a number of bytes to write.  The write system call
+works much like the read system call does: it goes from the syscall handler to
+the Fat439File class, to the OpenFile class.  From there, it iterates over the
+block device and writes the appropriate number of bytes.  If the number of bytes
+being written is more than the current file, then the file system automatically
+allocates the appropriate number of blocks from the "available" lis in the Fat.
+If it is writing a file smaller than the current file, it adds the remaining
+blocks back to the avail list.
 
-For our file editor, first we would load the file entirely into memory as a single buffer.  We would then build a linked list structure that would keep track of individual lines.  Each node in the linked list contains a char* of that line, a pointer to the next line, and a pointer to the previous line.  We keep track of the line that is the top line currently displayed in the file.  If a user scrolls off the bottom, the editor increments that value.  If he scrolls up, the editor decrements the value.  This allows us to display lines like vim does: if a line wraps arount the end, when a user hits down it would go to the next "line", not the next line displayed like Microsoft Word does.  This also allows us to easily split lines and add to lines: if the enter key is pressed, we can split the current char* and add a new linked list node.  When the user is done, they send the signal to save: ^w.  This puts the linked list structure back into a single buffer and writes it back to the file.
+For our file editor, first we would load the file entirely into memory as a
+single buffer.  We would then build a linked list structure that would keep
+track of individual lines.  Each node in the linked list contains a char* of
+that line, a pointer to the next line, and a pointer to the previous line.  We
+keep track of the line that is the top line currently displayed in the file.  If
+a user scrolls off the bottom, the editor increments that value.  If he scrolls
+up, the editor decrements the value.  This allows us to display lines like vim
+does: if a line wraps arount the end, when a user hits down it would go to the
+next "line", not the next line displayed like Microsoft Word does.  This also
+allows us to easily split lines and add to lines: if the enter key is pressed,
+       we can split the current char* and add a new linked list node.  When the
+       user is done, they send the signal to save: ^w.  This puts the linked
+       list structure back into a single buffer and writes it back to the file.
 
-In order to handle control characters, we re-instated the keyboard driver (kbd.cc) and read scancodes for ^w and ^q (quit) as well as the arrow keys.  Since we had arrow keys working for our editor, we decided to implement them in the shell.  You can now scroll through any written command in the shell left and write, and insert and delete characters in the middle of your command.
+In order to handle control characters, we re-instated the keyboard driver
+(kbd.cc) and read scancodes for ^w and ^q (quit) as well as the arrow keys.
+Since we had arrow keys working for our editor, we decided to implement them in
+the shell.  You can now scroll through any written command in the shell left and
+write, and insert and delete characters in the middle of your command.
 
-Finally, for fun we implemented a few fun features to our OS.  We added the clear command that would clear the screen.  We also added cmatrix, which has green characters fall down the screen like the movie "the matrix".  We also added a steam locomotive command "sl" that displays an ascii train that drives across the screen.
+Finally, for fun we implemented a few fun features to our OS.  We added the
+clear command that would clear the screen.  We also added cmatrix, which has
+green characters fall down the screen like the movie "the matrix".  We also
+added a steam locomotive command "sl" that displays an ascii train that drives
+across the screen.
 
 PROBLEMS:
 
-We had a fair number of problems with this project.  First of all, we started off as a networking project, but we realized we didn't know enough about networking to proceed, so we switched to a file editor.  Within the editor, scrolling and handling displaying lines, as well as inserting characters was a challenge to work correctly.  We spent the most amount of time on the linked list structure in the file editor that managed the file as the user was editing it.
+We had a fair number of problems with this project.  First of all, we started
+off as a networking project, but we realized we didn't know enough about
+networking to proceed, so we switched to a file editor.  Within the editor,
+           scrolling and handling displaying lines, as well as inserting
+           characters was a challenge to work correctly.  We spent the most
+           amount of time on the linked list structure in the file editor that
+           managed the file as the user was editing it.
 
-We also have a couple of problems in our OS that we were unable to solve by the deadline.  First of all, we have a concurrency error in the shell when it handles arrow keys.  If you are inserting characters, if a keyboard interrupt comes as all the characters on the vga display are shifting right, then the cursor is not replaced to the correct position, and either results in characters being displayed off screen or a page fault.  This is a problem because the shifting is occuring mostly in user code (determining what to shift) but the interrupts occur in the kernel, and we couldn't figure out a good way to threadsafe code in the kernel and user code.  We also have a security issue in the write system call.  If a user passes in a value larger than the buffer is allocated, they can write random memory to their file.  We decided to pass in a length because we figured the user might want to write the ascii character 0 to his/her file, so it would not be used as an end-of-buffer marker.  Finally, because we turned on the keyboard driver, we can no longer catch ^a values to get to qemu directly, so we need to have a separate window that kills the qemu process.
+We also have a couple of problems in our OS that we were unable to solve by the
+deadline.  First of all, we have a concurrency error in the shell when it
+handles arrow keys.  If you are inserting characters, if a keyboard interrupt
+comes as all the characters on the vga display are shifting right, then the
+cursor is not replaced to the correct position, and either results in characters
+being displayed off screen or a page fault.  This is a problem because the
+shifting is occuring mostly in user code (determining what to shift) but the
+interrupts occur in the kernel, and we couldn't figure out a good way to
+threadsafe code in the kernel and user code. We also have a security issue in
+the write system call.  If a user passes in a value larger than the buffer is
+allocated, they can write random memory to their file.  We decided to pass in a
+length because we figured the user might want to write the ascii character 0 to
+his/her file, so it would not be used as an end-of-buffer marker.  Finally,
+  because we turned on the keyboard driver, we can no longer catch ^a values to
+  get to qemu directly, so we need to have a separate window that kills the qemu
+  process.
 
 USES:
 
@@ -27,9 +79,12 @@ Run the project with curses for visual mode:
 qemu -curses -hdc kernel/kernel.img -hdd fat439/user.img
 
 To edit a file, open it with "edit filename.extension"
-Once in the editor, use up and down arrow keys to scroll up and down, and the right and left arrow keys to scroll right and left.
+Once in the editor, use up and down arrow keys to scroll up and down, and the
+right and left arrow keys to scroll right and left.
 Press ^w to save a file, and ^q to quit.
 
-Use left and right arrow keys to scroll in the shell, and use backspace or type to insert/delete either at the end, at the beginning, or in the middle of a command.
+Use left and right arrow keys to scroll in the shell, and use backspace or type
+to insert/delete either at the end, at the beginning, or in the middle of a
+command.
 Type cmatrix or sl for fun suprises!
 Type clear to clear the screen.
