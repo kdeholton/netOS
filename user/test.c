@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 	close(j);*/
 
 
-  char* test1 = malloc(12);
+  /*char* test1 = malloc(12);
   char* added = malloc(3);
   test1[0] = 'a';
   test1[1] = 'b';
@@ -56,8 +56,34 @@ int main(int argc, char** argv) {
   puts(added);
   puts("\n");
   puts(test2);
-  puts("\n");
+  puts("\n");*/
 	
+
+  char* test1 = malloc(10);
+  test1[0] = 'a';
+  test1[1] = 'b';
+  test1[2] = 'c';
+  test1[3] = 'd';
+  test1[4] = 'e';
+  test1[5] = 'f';
+  test1[6] = 'g';
+  test1[7] = 'h';
+  test1[8] = 'i';
+  test1[9] = 0;
+
+  char ins = 'X';
+
+  puts(test1);
+  puts("     ");
+  putdec(strlen(test1));
+  puts("\n");
+  putchar(ins);
+  puts("\n");
+  test1 = addChar(test1, 5, ins);
+  puts(test1);
+  puts("     ");
+  putdec(strlen(test1));
+  puts("\n");
 	
 	return 0;
 }

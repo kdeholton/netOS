@@ -195,3 +195,13 @@ char* deleteChar(char* str, int pos){
 	free(str);
 	return newChar;
 }
+
+char* addChar(char* str, int pos, char c){
+	char* newChar = malloc(strlen(str)+ 2);
+	memcpy(newChar, str, pos);
+	memcpy(newChar+pos+1, str + pos, strlen(str) - pos);
+	newChar[strlen(str)+1] = 0;
+  newChar[pos] = c;
+	free(str);
+	return newChar;
+}

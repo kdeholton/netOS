@@ -465,6 +465,22 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       }*/
       continue;
     }
+
+    //If we get here, this means we have an actual character to type!!
+    //This is where we want to stick it in the buffer of the linked list node.
+    if(c == 'a'){
+      int x = getRow();
+      int y = getColumn();
+      myLine->line = addChar(myLine->line, offset, c);
+      display(currentLine);
+      if(y >= 80){
+        y = 0;
+        x ++;
+      }
+      setCursor(x,y+1);
+      offset++;
+      continue;
+    }
     putchar(c);
     if (c == 13) {
       puts("\n");
