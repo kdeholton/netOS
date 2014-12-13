@@ -207,3 +207,9 @@ setCursor:
   mov 8(%esp), %edx
   int $100
   ret
+
+  .global decrementOnlyRow
+decrementOnlyRow:
+  mov $23, %eax
+  int $100
+  ret

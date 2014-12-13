@@ -87,9 +87,6 @@ char* gets() {
     down(sem);
     putchar(c);
     if (c == 13) { // enter
-      for(int j = i; j < realsz; j++){
-	putchar(~0xe);
-      }
       puts("\n");
       realsz++;
       p[realsz-1] = 0;

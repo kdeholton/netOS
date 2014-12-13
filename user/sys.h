@@ -24,5 +24,6 @@ extern long putcolor(char c, long bg, long fg);
 extern long getRow();
 extern long getColumn();
 extern void setCursor(int x, int y);
+extern void decrementOnlyRow();
 
 #endif

@@ -103,8 +103,8 @@ int writeFile(int fd, struct listNode* head){
     buffer[val] = '\n';
     val++;
     if(val > size){
-        putdec(val); puts(" IS GREATER THAN "); putdec(size);
-	puts("\nYOU ARE DUM\n");
+      putdec(val); puts(" IS GREATER THAN "); putdec(size);
+      puts("\nYOU ARE DUM\n");
     }
 //    strcat(buffer, currentLine->line);
 //    strcat(buffer,newline);
@@ -196,7 +196,7 @@ int main(int argc, char** argv){
     setCursor(0,0);
     offset = 0;
     //char* gotten = gets();
-    getbuf(head, 0);
+    getbuf(head, head, fd);
     close(fd);
     //currentLine->line = append(currentLine->line, gotten, strlen(currentLine->line)); //The strlen appends to the end of the line.
 
@@ -367,17 +367,27 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       continue;
     }
     if(c == ~0x1){ //^q == 0xfe EXIT
+      int x = getRow();
+      putdec(x);
+      puts("\n");
+      puts("***");
+      puts(myLine->line);
+      puts("\n");
+      putdec(offset);
+      puts("\n");
+      continue;
+    }
+    if(c == ~0x2){ //^w == 0xfd 
       clear();
       writeFile(fd,head);
       return 0;
     }
-    if(c == ~0x2){ //^w == 0xfd
-      puts("***");
-      puts(myLine->line);
-      puts("\n");
-      continue;
+    if(c == 13){ //Return '\n'
     }
     if(c == 8 || c == 0x7f){ //Backspace
+      /*if(offset != 0 && offset%80 == 0){
+        decrementOnlyRow();
+      }*/
       if(offset == 0){
         if(myLine->prev != 0 && myLine->prev->line != 0){ //Here, we need to remove the newline. make two node
           int len = strlen(myLine->prev->line);
@@ -393,7 +403,7 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
           puts(myLine->line);
           display(currentLine);
           offset = len;
-          setCursor(x-1, len);
+          setCursor(x-1, len%80);
         }
         continue;
       }

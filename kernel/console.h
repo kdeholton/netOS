@@ -42,6 +42,7 @@ public:
   virtual int getRow();
   virtual int getColumn();
   virtual void setCursor(int x, int y);
+	virtual void decrementOnlyRow();
 };
 
 #endif
