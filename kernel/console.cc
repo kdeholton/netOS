@@ -127,7 +127,6 @@ void Console::decrementRow(){
 
 void Console::decrementOnlyRow(){
 	row--;
-	col = COLS - 1;
 }
 
 void Console::incrementColumn(){

@@ -335,6 +335,10 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
             }*/
         }
       }
+      if(offset > strlen(myLine->line)){
+        offset = strlen(myLine->line);
+        setCursor(getRow(),offset%80);
+      }
       continue;
     }
     if(c == ~0xc){ //Down Arrow == 0xf3
@@ -385,11 +389,9 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
     if(c == 13){ //Return '\n'
     }
     if(c == 8 || c == 0x7f){ //Backspace
-      /*if(offset != 0 && offset%80 == 0){
-        decrementOnlyRow();
-      }*/
       if(offset == 0){
         if(myLine->prev != 0 && myLine->prev->line != 0){ //Here, we need to remove the newline. make two node
+          //decrementOnlyRow();
           int len = strlen(myLine->prev->line);
           int x = getRow();
           myLine->prev->line = append(myLine->prev->line, myLine->line, strlen(myLine->prev->line)); //Add current line to prev
@@ -411,7 +413,11 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       int x = getRow();
       int y = getColumn();
       display(currentLine);
-      setCursor(x,y-1);
+      if((offset + 1) % 80 == 0){
+        setCursor(x-1,79);
+      }
+      else
+        setCursor(x,y-1);
       /*//puts(p);
       if(i > 0){
         putchar(c);
