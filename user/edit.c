@@ -32,22 +32,23 @@ void display(struct listNode* currentTopLine){
 
 }
 
-struct listNode* accountForNonprinted(struct listNode* currentTopLine, struct listNode* myLine){
-  clear();
+int onNonprintedLine(struct listNode* currentTopLine){
+  return 0;
+  int x = getRow();
+  putdec(x);
   int linesPut = 0;
   struct listNode* currentLine = currentTopLine;
   while(linesPut <= 25){
     if(currentLine == 0 || currentLine->line == 0)
       break;
     if(25 - linesPut < numberOfLines(currentLine->line))
-      return 0;
+      break;
     if(linesPut != 0)
       puts("\n");
     linesPut += numberOfLines(currentLine->line);
-    puts(currentLine->line);
     currentLine = currentLine->next;
   }
-  return 0;
+  return x > 25-linesPut;
 
 }
 
@@ -57,7 +58,7 @@ void printHead(struct listNode* head){
 	struct listNode* current = head;
 	while(current != 0){
 		if(current->line == 0){
-			puts("YOU DONE FUCKED UP NOW\n");
+			puts("YOU DONE F***ED UP NOW\n");
 		}
 		puts(current->line); puts("\n");
 		current = current->next;
@@ -351,7 +352,7 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       }
       for(j = 0; j<numLines; j++){
         int i = putchar(~0xc);
-        if(i == 2){ //This is a shift up.
+        if(i == 2 || onNonprintedLine(currentLine)){ //This is a shift up.
           if(currentLine->next != 0){
             currentLine = currentLine->next;
             int z = numberOfLines(currentLine->prev->line);
