@@ -393,8 +393,32 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       writeFile(fd,head);
       return 0;
     }
-    if(c == 13){ //Return '\n'
+
+    if(c == 13){ //Split node into two, changing the linked list structure. NEWLINE, \n
+      struct listNode* newNode = (struct listNode*)malloc(sizeof(struct listNode));
+      newNode->line = malloc(strlen(myLine->line) - offset + 1);
+      newNode->prev = myLine;
+      newNode->next = myLine->next;
+
+      memcpy((void*)(newNode->line), (void*)(myLine->line + offset), strlen(myLine->line) - offset);
+      newNode->line[strlen(myLine->line) - offset + 1] = 0; //null termination!
+
+      myLine->line = realloc(myLine->line, offset + 1); //resize the old string, cause it's now shorter.
+      myLine->line[offset] = 0;
+
+      //Update pointers
+      myLine->next = newNode;
+      newNode->next->prev = newNode;
+      myLine = newNode;
+
+      offset = 0;
+
+      int x = getRow();
+      display(currentLine);
+      setCursor(x + 1, 0);
+      continue;
     }
+
     if(c == 8 || c == 0x7f){ //Backspace
       if(offset == 0){
         if(myLine->prev != 0 && myLine->prev->line != 0){ //Here, we need to remove the newline. join two node
