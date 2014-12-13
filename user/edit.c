@@ -323,12 +323,13 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
         int i =  putchar(~0xd);
         if(i == 1){ //This is a shift down.
           if(currentLine->prev != 0){
-            currentLine = currentLine->prev;
             int x = getRow();
             int y = getColumn();
+            currentLine = currentLine->prev;
             display(currentLine);
             setCursor(x,y);
           }
+          break;
           /*if(currentTopLine->prev != 0){
             currentTopLine = currentTopLine->prev;
             display(currentTopLine);
@@ -408,7 +409,11 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
           next->prev = myLine;
           free(toDelete->line);
           free(toDelete);
-          puts(myLine->line);
+          /*if(x == 0){ //Here, we are at the top of the screen, trying to delete. need to scroll back up some.
+            currentLine = currentLine->prev;
+            if(currentLine == 0); //THIS IS VERY BAD. SHOULD NEVER HAPPEN, BUT BAD NONETHELESS
+          }*/
+          //puts(myLine->line);
           display(currentLine);
           offset = len;
           setCursor(x-1, len%80);
