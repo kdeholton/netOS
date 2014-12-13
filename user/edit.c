@@ -377,12 +377,36 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       puts("\n");
       continue;
     }
-    if(c == 8 || c == 0x7f){
-      //puts(p);
+    if(c == 8 || c == 0x7f){ //Backspace
+      if(offset == 0){
+        if(myLine->prev != 0 && myLine->prev->line != 0){ //Here, we need to remove the newline. make two node
+          int len = strlen(myLine->prev->line);
+          int x = getRow();
+          myLine->prev->line = append(myLine->prev->line, myLine->line, strlen(myLine->prev->line)); //Add current line to prev
+          struct listNode* toDelete = myLine;
+          struct listNode* next = myLine->next;
+          myLine = myLine->prev;
+          myLine->next = next;
+          next->prev = myLine;
+          free(toDelete->line);
+          free(toDelete);
+          puts(myLine->line);
+          display(currentLine);
+          offset = len;
+          setCursor(x-1, len);
+        }
+        continue;
+      }
+      myLine->line = deleteChar(myLine->line, --offset );
+      int x = getRow();
+      int y = getColumn();
+      display(currentLine);
+      setCursor(x,y-1);
+      /*//puts(p);
       if(i > 0){
         putchar(c);
         p[i--] = 0;
-      }
+      }*/
       continue;
     }
     putchar(c);
