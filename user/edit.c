@@ -409,14 +409,18 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
           next->prev = myLine;
           free(toDelete->line);
           free(toDelete);
-          /*if(x == 0){ //Here, we are at the top of the screen, trying to delete. need to scroll back up some.
+          if(x == 0){ //Here, we are at the top of the screen, trying to delete. need to scroll back up some.
             currentLine = currentLine->prev;
             if(currentLine == 0); //THIS IS VERY BAD. SHOULD NEVER HAPPEN, BUT BAD NONETHELESS
-          }*/
-          //puts(myLine->line);
-          display(currentLine);
-          offset = len;
-          setCursor(x-1, len%80);
+            display(currentLine);
+            offset = len;
+            setCursor(x + offset/80, len%80);
+          }
+          else{
+            display(currentLine);
+            offset = len;
+            setCursor(x-1, len%80);
+          }
         }
         continue;
       }
