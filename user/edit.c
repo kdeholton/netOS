@@ -32,24 +32,19 @@ void display(struct listNode* currentTopLine){
 
 }
 
-int onNonprintedLine(struct listNode* currentTopLine){
-  return 0;
-  int x = getRow();
-  putdec(x);
+int onNonprintedLine(struct listNode* currentTopLine, struct listNode* myLine){
   int linesPut = 0;
   struct listNode* currentLine = currentTopLine;
   while(linesPut <= 25){
     if(currentLine == 0 || currentLine->line == 0)
-      break;
+      return 0;
     if(25 - linesPut < numberOfLines(currentLine->line))
-      break;
-    if(linesPut != 0)
-      puts("\n");
+      if(currentLine->line == myLine->line)
+        return 1;
     linesPut += numberOfLines(currentLine->line);
     currentLine = currentLine->next;
   }
-  return x > 25-linesPut;
-
+  return 0;
 }
 
 struct listNode* currentLine;
@@ -352,7 +347,9 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       }
       for(j = 0; j<numLines; j++){
         int i = putchar(~0xc);
-        if(i == 2 || onNonprintedLine(currentLine)){ //This is a shift up.
+        //putdec(onNonprintedLine(currentLine,myLine));
+        //gets();
+        if(i == 2 || onNonprintedLine(currentLine, myLine)){ //This is a shift up.
           if(currentLine->next != 0){
             currentLine = currentLine->next;
             int z = numberOfLines(currentLine->prev->line);
