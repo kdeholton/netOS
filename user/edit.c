@@ -401,7 +401,7 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       newNode->next = myLine->next;
 
       memcpy((void*)(newNode->line), (void*)(myLine->line + offset), strlen(myLine->line) - offset);
-      newNode->line[strlen(myLine->line) - offset + 1] = 0; //null termination!
+      newNode->line[strlen(myLine->line) - offset] = 0; //null termination!
 
       myLine->line = realloc(myLine->line, offset + 1); //resize the old string, cause it's now shorter.
       myLine->line[offset] = 0;
@@ -482,6 +482,9 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       int x = getRow();
       int y = getColumn();
       myLine->line = addChar(myLine->line, offset, c);
+      if(onNonprintedLine(currentLine,myLine)){
+        current = current->next;
+      }
       display(currentLine);
       if(y >= 80){
         y = 0;
