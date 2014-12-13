@@ -336,8 +336,9 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
         }
       }
       if(offset > strlen(myLine->line)){
+        int lines = offset / 80;
         offset = strlen(myLine->line);
-        setCursor(getRow(),offset%80);
+        setCursor(getRow() - lines + offset/80, offset%80);
       }
       continue;
     }
@@ -367,6 +368,11 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
             display(currentTopLine);
             }*/
         }
+      }
+      if(offset > strlen(myLine->line)){
+        int lines = offset/80;
+        offset = strlen(myLine->line);
+        setCursor(getRow() - lines + offset/80,offset%80);
       }
       continue;
     }
