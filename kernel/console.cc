@@ -89,10 +89,6 @@ int Console::putcolor(char ch, int bg, int fg){
 	if(ch == 8 || ch == 0x7f){ // backspace
 		decrementColumn();
 		vga->put(row, col, ' ', bg, fg);
-		for(int i = col; i < COLS-1; i++){
-			vga->put(row, i, vga->get(row, i+1), bg, fg);
-		}
-		vga->put(row, COLS-1, ' ', bg, fg);
 	}
 	if(ch >= 0x20 && ch <= 0x7e){
 		vga->put(row, col, ch, bg, fg);
