@@ -81,11 +81,7 @@ int writeFile(int fd, struct listNode* head){
 
     currentLine = currentLine->next;
   }
-  /*puts("size:");
-    putdec(size);
-    puts("\n");*/
   currentLine = head;
-  //printHead(currentLine);
   //Create a buffer of correct size
   char* buffer = malloc(size + 1); //Add one for null termination.
   for(int i = 0; i < size + 1; i++){
@@ -95,7 +91,6 @@ int writeFile(int fd, struct listNode* head){
   while(1){
     if(currentLine == 0 || currentLine->line == 0)
       break;
-    //    puts("Concat: \n"); puts(currentLine->line); puts("\n");
     memcpy(buffer + val, currentLine->line, strlen(currentLine->line));
     val += strlen(currentLine->line);
     buffer[val] = '\n';
@@ -104,32 +99,10 @@ int writeFile(int fd, struct listNode* head){
       putdec(val); puts(" IS GREATER THAN "); putdec(size);
       puts("\nYOU ARE DUM\n");
     }
-    //    strcat(buffer, currentLine->line);
-    //    strcat(buffer,newline);
 
     currentLine = currentLine->next;
   }
   buffer[size] = 0;
-  //  puts("Here we are\n");
-  //
-  //  Cleaning up, now done in another method:
-  /*currentLine = head;
-  while(currentLine != 0 && currentLine->line != 0){
-    //	puts("ready to free line\n");
-    free(currentLine->line);
-    if(currentLine->next == 0){
-      //		puts("freeing the last one\n");
-      free(currentLine);
-      break;
-    }
-    else{
-      //		puts("freeing one\n");
-      currentLine = currentLine->next;
-      free(currentLine->prev);
-    }
-  }*/
-  //  puts("buffer is: \n");
-  //puts(buffer);
   //Write that buffer back to disk
   buffer[size] = 0;
   write(fd, buffer, size);
@@ -159,7 +132,6 @@ int main(int argc, char** argv){
   }
   clear();
   if(argc == 2){
-    // char c = 'a';
     int fd = open(argv[1]);
     if(fd < 0){
       puts("ERROR: Unable to open file ");
@@ -212,56 +184,12 @@ int main(int argc, char** argv){
     free(currentLine->next);
     free(buffer);
     currentLine->next = 0;
-    //puts("BEFORE WRITE: \n");
-    //printHead(head);
     display(head);
     setCursor(0,0);
     offset = 0;
-    //char* gotten = gets();
     getbuf(head, head, fd);
     close(fd);
-    //currentLine->line = append(currentLine->line, gotten, strlen(currentLine->line)); //The strlen appends to the end of the line.
 
-
-    //This prints out the linked list, debugging purposes.
-    /*currentLine = head;
-      while(1){
-      if(currentLine == 0 || currentLine->line == 0)
-      break;
-      puts(currentLine->line);
-      puts("\n");
-      currentLine = currentLine->next;
-      }*/
-
-
-
-    /*while(c != 'p'){
-      currentLine->line = 0;
-      currentLine->next = 0;
-      currentLine->prev = last;
-
-      currentLine->line = gets();
-
-      last = currentLine;
-
-      currentLine->next = (struct listNode*)malloc(sizeof(struct listNode));
-      currentLine->next->prev = currentLine;
-      currentLine->next->next = 0;
-      currentLine->next->line = 0;
-      c = *(currentLine->line);
-      currentLine = currentLine->next;
-      }
-      currentLine = head;
-      while(1){
-      if(currentLine == 0 || currentLine->line == 0)
-      break;
-      puts(currentLine->line);
-      puts("\n");
-      currentLine = currentLine->next;
-      }
-
-      puts(buffer);
-      gets();*/
 
 
   }
@@ -348,10 +276,6 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
             setCursor(x,y);
           }
           break;
-          /*if(currentTopLine->prev != 0){
-            currentTopLine = currentTopLine->prev;
-            display(currentTopLine);
-            }*/
         }
       }
       if(offset > strlen(myLine->line)){
@@ -371,8 +295,6 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       }
       for(j = 0; j<numLines; j++){
         int i = putchar(~0xc);
-        //putdec(onNonprintedLine(currentLine,myLine));
-        //gets();
         if(i == 2 || onNonprintedLine(currentLine, myLine)){ //This is a shift up.
           if(currentLine->next != 0){
             currentLine = currentLine->next;
@@ -382,10 +304,6 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
             display(currentLine);
             setCursor(x-z,y);
           }
-          /*if(currentTopLine->next != 0){
-            currentTopLine = currentTopLine->next;
-            display(currentTopLine);
-            }*/
         }
       }
       if(offset > strlen(myLine->line)){
@@ -450,7 +368,6 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
     if(c == 8 || c == 0x7f){ //Backspace
       if(offset == 0){
         if(myLine->prev != 0 && myLine->prev->line != 0){ //Here, we need to remove the newline. join two node
-          //decrementOnlyRow();
           int len = strlen(myLine->prev->line);
           int x = getRow();
           myLine->prev->line = append(myLine->prev->line, myLine->line, strlen(myLine->prev->line)); //Add current line to prev
@@ -486,17 +403,11 @@ char* getbuf(struct listNode* current, struct listNode* head, long fd) {
       }
       else
         setCursor(x,y-1);
-      /*//puts(p);
-        if(i > 0){
-        putchar(c);
-        p[i--] = 0;
-        }*/
       continue;
     }
 
     //If we get here, this means we have an actual character to type!!
     //This is where we want to stick it in the buffer of the linked list node.
-    //TODO Account for going off the edge of the screen
     if(1){ // for debugging purposes, left in.
       int x = getRow();
       int y = getColumn();

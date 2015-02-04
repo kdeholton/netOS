@@ -42,32 +42,6 @@ void Console::moveToZero(){
 
 int Console::put(char ch){
 	return putcolor(ch, VGA::BLACK, VGA::WHITE);
-/*	vga->cursor(row, col, VGA::BLACK, VGA::WHITE);
-  if(ch == ~0xf) {//Left arrow key
-    cursorLeft();
-  }
-  if(ch == ~0xe) {//Right arrow key
-    cursorRight();
-  }
-  if(ch == ~0xd) {//Up arrow key
-    cursorUp();
-  }
-  if(ch == ~0xc) {//Down arrow key
-    cursorDown();
-  }
-	if(ch == 8 || ch == 0x7f){
-		decrementColumn();
-		vga->put(row, col, ' ', VGA::BLACK, VGA::WHITE);
-	}
-	if(ch >= 0x20 && ch <= 0x7e){
-		vga->put(row, col, ch, VGA::BLACK, VGA::WHITE);
-		incrementColumn();
-	}
-	if(ch == '\n'){
-		//length = 0;
-		incrementRow();
-	}
-	vga->cursor(row, col, VGA::GREEN, VGA::WHITE);*/
 }
 
 
@@ -100,7 +74,6 @@ int Console::putcolor(char ch, int bg, int fg){
 		
 	}
 	if(ch == '\n'){
-		//length = 0;
 		incrementRow();
 	}
 	vga->cursor(row, col, bg, fg);
@@ -146,7 +119,6 @@ void Console::incrementRow(){ // Sets col to 0
 }
 
 char Console::get(){
-	//char ch = u8250->get();
 	mutex->lock();
   char ch = Keyboard::is->get();
 	mutex->unlock();
@@ -173,15 +145,6 @@ void Console::shiftDown(){
 	clearRow(0);
 }
 
-/*void Console::shiftUpBuf(){
-	for(int r = 1; r < ROWS; r++){
-		for(int c = 0; c < COLS; c++){
-			vga->put(r - 1, c, vga->get(r, c), vga->getBg(r, c), vga->getFg(r, c));
-		}
-	}
-	row--;
-	clearRow(ROWS - 1);
-}*/
 
 void Console::clearRow(int r){
 	for(int c = 0; c < COLS; c++){
@@ -206,7 +169,6 @@ int Console::cursorRight(){
 int Console::cursorUp(){
   row--;
   if(row<0){
-    //shiftDown();
     row++;
     vga->cursor(row,col,VGA::BLACK,VGA::WHITE);
     return 1;
@@ -219,7 +181,6 @@ int Console::cursorDown(){
   row++;
   if(row >= ROWS){
     row--;
-    //shiftUp();
     vga->cursor(row,col,VGA::BLACK,VGA::WHITE);
     return 2;
   }
